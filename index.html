@@ -13,25 +13,97 @@
     </header>
 
     <main>
-        <section id="selezione-rischio">
-            <h2>Seleziona il Tipo di Rischio/Criticità</h2>
-            <label for="elenco-rischi">Scegli un rischio:</label>
-            <select id="elenco-rischi" name="rischio">
-                <option value="">-- Seleziona --</option>
-                <option value="incendio-boschivo">Incendio Boschivo</option>
-                <option value="alluvione">Alluvione/Esondazione</option>
-                <option value="terremoto">Terremoto</option>
-                <option value="maltempo">Maltempo (vento forte, neve, ghiaccio)</option>
-                <option value="incidente-stradale">Incidente Stradale</option>
-                </select>
-            <button id="visualizza-procedura">Visualizza Procedura</button>
+        <section id="modelli-gestione">
+            <h2>Modelli di Gestione</h2>
+            <div class="sottosezione">
+                <h3>Gestione Bollettino di Criticità</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="bollettino-criticita">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Avviso di Criticità</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="avviso-criticita">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Avviso Condizioni Meteorologiche Avverse</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="avviso-meteo">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Bollettino Valanghe</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="bollettino-valanghe">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Avviso Superamento Soglia per Rischio Idraulico</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="avviso-idraulico">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Avviso Superamento Soglia per Rischio Idrogeologico</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="avviso-idrogeologico">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Avviso Rischio Grandi Dighe</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="avviso-dighe">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Criticità Frana Maratea</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="frana-maratea">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Rischio Sismico</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="rischio-sismico">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Rischio Incidente Rilevante</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="incidente-rilevante">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Ricerca Persone Scomparse</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="persone-scomparse">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Gestione Rischio Maremoto</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="rischio-maremoto">Visualizza Procedura</button>
+            </div>
+        </section>
+
+        <section id="rischi">
+            <h2>Rischi</h2>
+            <div class="sottosezione">
+                <h3>Incendio</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="incendio-boschivo">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Dighe</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="gestione-dighe">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Idrogeologico</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="gestione-idrogeologico">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Idrico</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="gestione-idrico">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Valanghe</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="gestione-valanghe">Visualizza Procedura</button>
+            </div>
+            <div class="sottosezione">
+                <h3>Meteo</h3>
+                <button class="visualizza-procedura-specifica" data-procedura="gestione-meteo">Visualizza Procedura</button>
+            </div>
+        </section>
+
+        <section id="tools">
+            <h2>Tools</h2>
+            <p>Qui potresti inserire link a strumenti utili o funzionalità specifiche.</p>
+            <button id="apri-inserimento-dati">Inserisci Nuovi Dati Evento</button>
         </section>
 
         <section id="visualizzazione-procedura" class="hidden">
             <h2>Procedura Operativa: <span id="titolo-procedura"></span></h2>
             <div id="contenuto-procedura">
                 </div>
-            <button id="torna-selezione">Torna alla Selezione</button>
+            <button id="torna-alla-selezione">Torna alla Selezione</button>
         </section>
 
         <section id="inserimento-dati" class="hidden">
@@ -61,8 +133,6 @@
                 <button type="button" id="annulla-inserimento">Annulla</button>
             </form>
         </section>
-
-        <button id="apri-inserimento-dati">Inserisci Nuovi Dati Evento</button>
     </main>
 
     <footer>
