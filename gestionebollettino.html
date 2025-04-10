@@ -33,17 +33,83 @@
         <p>Sala Operativa Protezione Civile - Regione Basilicata</p>
     </header>
 
-    <main>
+   <main>
         <section id="procedura-bollettino-criticita" class="procedura-bollettino">
             <h3>Procedura Operativa - Gestione Bollettino di Criticità Regionale</h3>
             <form id="checklist-bollettino-criticita">
-                <button type="button">Salva Progress</button> <button type="button">Stampa Procedura</button>
-            </form>
-        </section>
+                <h4>Ricezione Bollettino</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="ricevuto-bollettino" name="ricevuto-bollettino">
+                    <label for="ricevuto-bollettino">Ricevuto il Bollettino di Criticità Regionale (C.F.D. Basilicata via FOLIUM – INFOCERT e OUTLOOK)</label>
+                </div>
 
-        <div class="home-button-container">
-            <button class="home-button" onclick="window.location.href='index.html'">Torna alla Home</button>
-        </div>
+                <h4>Inoltro Bollettino</h4>
+                <p>Procedere con l’inoltro ai destinatari del BOLLETTINO DI CRITICITA’ REGIONALE, secondo le seguenti modalità:</p>
+
+                <h5>Invio Tramite Sito Web Regionale</h5>
+                <div class="checklist-item">
+                    <input type="checkbox" id="accesso-sito" name="accesso-sito">
+                    <label for="accesso-sito">Accedere al sito <a href="https://protezionecivile.regione.basilicata.it/protcivbas/home.jsp" target="_blank">https://protezionecivile.regione.basilicata.it/protcivbas/home.jsp</a> ed inserire le credenziali</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="selezionato-atti-documenti" name="selezionato-atti-documenti">
+                    <label for="selezionato-atti-documenti">Effettuato l’accesso, selezionare “atti e documenti”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="accesso-area-riservata" name="accesso-area-riservata">
+                    <label for="accesso-area-riservata">Procedere accedendo a, “area riservata funzionari Protezione Civile”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inviato-mail-rischio" name="inviato-mail-rischio">
+                    <label for="inviato-mail-rischio">Nella sezione “Invio Mail Rischio Idrogeologico e Idraulico”, cliccare “Invia mail di notifica”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="atteso-trasmissione" name="atteso-trasmissione">
+                    <label for="atteso-trasmissione">Attendere l’avvenuta trasmissione</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="acquisito-orario" name="acquisito-orario">
+                    <label for="acquisito-orario">Acquisire l’orario dell’ultima mail inviata, da riportare sul report giornaliero</label>
+                </div>
+
+                <h5>Invio Tramite Telegram - Gruppo “Protezione Civile Basilicata”</h5>
+                <div class="checklist-item">
+                    <input type="checkbox" id="incollato-testo-telegram" name="incollato-testo-telegram">
+                    <label for="incollato-testo-telegram">Incollare le due righe relative a “BOLLETTINO DI CRITICITA’ REGIONALE del giorno – mese - anno” (aggiornato dal file Word Telegram)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="selezionato-link-telegram" name="selezionato-link-telegram">
+                    <label for="selezionato-link-telegram">Selezionare &lt;&lt;&lt;clicca qui per visualizzare il bollettino di criticità regionale&gt;&gt;&gt;</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="aperto-formattazione-telegram" name="aperto-formattazione-telegram">
+                    <label for="aperto-formattazione-telegram">Tasto destro → Formattazione → Crea link</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="incollato-url-telegram" name="incollato-url-telegram">
+                    <label for="incollato-url-telegram">Incollare sotto URL il link relativo al Bollettino di Criticità Regionale del giorno (copiato dal sito C.F.D.)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inviato-telegram" name="inviato-telegram">
+                    <label for="inviato-telegram">Cliccare “crea” e “invia”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inoltrato-telegram-volontari" name="inoltrato-telegram-volontari">
+                    <label for="inoltrato-telegram-volontari">Inoltrare il messaggio anche al gruppo “Volontariato – Protezione Civile Basilicata”</label>
+                </div>
+
+                <h5>Invio Tramite WhatsApp Canali (PROTEZIONE CIVILE BASILICATA)</h5>
+                <div class="checklist-item">
+                    <input type="checkbox" id="scritto-testo-whatsapp" name="scritto-testo-whatsapp">
+                    <label for="scritto-testo-whatsapp">Dopo aver scritto BOLLETTINO DI CRITICITA’ REGIONALE del giorno – mese – anno fare “shift+invio” per andare a capo</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="incollato-link-whatsapp" name="incollato-link-whatsapp">
+                    <label for="incollato-link-whatsapp">Incollare il link relativo al Bollettino di Criticità Regionale del giorno (copiato dal sito C.F.D.)</label>
+                </div>
+
+                <button type="button">Salva Progress</button> <button type="button">Stampa Procedura</button> </form>
+        </section>
     </main>
 
     <footer>
