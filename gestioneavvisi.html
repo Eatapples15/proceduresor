@@ -1,1 +1,135 @@
 
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Bollettino di Criticità - Protezione Civile Basilicata</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ... (i tuoi stili CSS esistenti) ... */
+        .home-button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .home-button {
+            background-color: #6c757d; /* Grigio Bootstrap (esempio) */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .home-button:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gestione Bollettino di Criticità</h1>
+        <p>Sala Operativa Protezione Civile - Regione Basilicata</p>
+    </header>
+
+   <main>
+        <section id="procedura-avviso-criticita" class="procedura-avviso">
+            <h3>Procedura Operativa - Gestione Avviso di Criticità Regionale</h3>
+            <form id="checklist-bollettino-criticita">
+                <h4>Ricezione Avviso</h4>
+                <div class="checklist-item">
+                    <input type="checkbox" id="ricevuto-avviso" name="ricevuto-avviso">
+                    <label for="ricevuto-bollettino">•	Protocollare l’Avviso di Criticità Regionale, emesso dal C.F.D. Basilicata e trasmesso in S.O.R. a mezzo FOLIUM – INFOCERT e OUTLOOK,</label>
+                </div>
+              <div class="checklist-item">
+                    <input type="checkbox" id="elaborazione-copertina" name="elaborazione-copertina">
+                    <label for="ricevuto-bollettino">•	elaborare la copertina con inserimento dei dati inerenti l’Avviso di Criticità Regionale pervenuto</label>
+                </div>
+              <div class="checklist-item">
+                    <input type="checkbox" id="combinare-files" name="combinare.files">
+                    <label for="ricevuto-bollettino">•	combinare i due files (Copertina e Avviso di Criticità Regionale) salvando il nuovo file in PDF, denominandolo ALLERTA PROTEZIONE CIVILE N. … del giorno – mese – anno,</label>
+                </div>
+
+                <h4>Inoltro Avviso</h4>
+                <p>•	procedere con l’inoltro ai destinatari dell’ALLERTA PROTEZIONE CIVILE N. … del giorno – mese – anno, secondo le seguenti modalità:</p>
+
+                <h5>Invio Tramite PEC a mezzo Infocert</h5>
+                <div class="checklist-item">
+                    <input type="checkbox" id="PEC" name="PEC">
+                    <label for="accesso-sito">	nuovo messaggio; </label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="selezionato-destinatari" name="selezionato-destinatari">
+                    <label for="selezionato-atti-documenti">	inserire in qualità di destinatari (BASI INTERESSATE o BASI TUTTE – CRITICITA’);”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="allegare-file" name="allegare-file">
+                    <label for="accesso-area-riservata">	allegare il file ALLERTA PROTEZIONE CIVILE N. … del giorno – mese – anno;”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inserire-oggetto" name="inserire-oggetto">
+                    <label for="inviato-mail-rischio">	inserire oggetto “ALLERTA PROTEZIONE CIVILE N. … del giorno – mese – anno”; </label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="atteso-trasmissione" name="atteso-trasmissione">
+                    <label for="atteso-trasmissione">Attendere l’avvenuta trasmissione</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="acquisito-orario" name="acquisito-orario">
+                    <label for="acquisito-orario">Acquisire l’orario dell’ultima mail inviata, da riportare sul report giornaliero</label>
+                </div>
+
+                <h5>Invio Tramite Telegram - Gruppo “Protezione Civile Basilicata”</h5>
+                <div class="checklist-item">
+                    <input type="checkbox" id="incollato-testo-telegram" name="incollato-testo-telegram">
+                    <label for="incollato-testo-telegram">Incollare le due righe relative a “BOLLETTINO DI CRITICITA’ REGIONALE del giorno – mese - anno” (aggiornato dal file Word Telegram)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="selezionato-link-telegram" name="selezionato-link-telegram">
+                    <label for="selezionato-link-telegram">Selezionare &lt;&lt;&lt;clicca qui per visualizzare il bollettino di criticità regionale&gt;&gt;&gt;</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="aperto-formattazione-telegram" name="aperto-formattazione-telegram">
+                    <label for="aperto-formattazione-telegram">Tasto destro → Formattazione → Crea link</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="incollato-url-telegram" name="incollato-url-telegram">
+                    <label for="incollato-url-telegram">Incollare sotto URL il link relativo al Bollettino di Criticità Regionale del giorno (copiato dal sito C.F.D.)</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inviato-telegram" name="inviato-telegram">
+                    <label for="inviato-telegram">Cliccare “crea” e “invia”</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="inoltrato-telegram-volontari" name="inoltrato-telegram-volontari">
+                    <label for="inoltrato-telegram-volontari">Inoltrare il messaggio anche al gruppo “Volontariato – Protezione Civile Basilicata”</label>
+                </div>
+
+                <h5>Invio Tramite WhatsApp Canali (PROTEZIONE CIVILE BASILICATA)</h5>
+                <div class="checklist-item">
+                    <input type="checkbox" id="scritto-testo-whatsapp" name="scritto-testo-whatsapp">
+                    <label for="scritto-testo-whatsapp">Dopo aver scritto BOLLETTINO DI CRITICITA’ REGIONALE del giorno – mese – anno fare “shift+invio” per andare a capo</label>
+                </div>
+                <div class="checklist-item">
+                    <input type="checkbox" id="incollato-link-whatsapp" name="incollato-link-whatsapp">
+                    <label for="incollato-link-whatsapp">Incollare il link relativo al Bollettino di Criticità Regionale del giorno (copiato dal sito C.F.D.)</label>
+                </div>
+
+                <button type="button">Salva Progress</button> <button type="button">Stampa Procedura</button> </form>
+        </section>
+       <div class="home-button-container">
+            <button class="home-button" onclick="window.location.href='index.html'">Torna alla Home</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Protezione Civile Regione Basilicata</p>
+    </footer>
+
+    <script>
+        // (eventuali script JavaScript specifici per questa pagina)
+    </script>
+</body>
+</html>
