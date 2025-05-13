@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attiva Bot Bollettino</title>
+</head>
+<body>
+    <h1>Attiva l'invio immediato del bollettino</h1>
+    <button id="attivaBotBtn">Attiva Bot</button>
+    <div id="status"></div>
+
+    <script>
+        document.getElementById('attivaBotBtn').addEventListener('click', function() {
+            fetch('https://tuo_username.pythonanywhere.com/attiva_bot', { // Sostituisci con il tuo URL di PythonAnywhere
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Facoltativo, ma buona pratica
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status').innerText = data.message;
+            })
+            .catch(error => {
+                document.getElementById('status').innerText = 'Errore durante la richiesta: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
