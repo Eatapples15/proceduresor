@@ -3,85 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestione Emergenze - Protezione Civile Basilicata</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Procedure Sala Operativa</title>
     <style>
-        #procedure, #rischi {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f0f2f5;
         }
 
-        #procedure h2, #rischi h2 {
-            color: #dc3545;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-
-        #procedure button, #rischi button {
-            background-color: #007bff;
+        /* --- MENU LATERALE DEI RISCHI --- */
+        #menu-rischi {
+            width: 300px;
+            background-color: #2c3e50;
             color: white;
-            padding: 10px 15px;
+            padding: 20px;
+            overflow-y: auto; /* Aggiunge scroll se i pulsanti sono troppi */
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        #menu-rischi h2 {
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        #menu-rischi button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #34495e;
+            color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
-            margin-right: 10px;
+            text-align: left;
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #menu-rischi button:hover {
+            background-color: #4e6a85;
+            transform: scale(1.02);
+        }
+
+        #menu-rischi button.active {
+            background-color: #3498db; /* Colore per il pulsante attivo */
+        }
+
+        /* --- AREA PRINCIPALE DEL CONTENUTO --- */
+        #contenuto-procedura {
+            flex-grow: 1; /* Occupa lo spazio rimanente */
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .scheda {
+            display: none; /* Nasconde tutte le schede per default */
+            animation: fadeIn 0.5s;
+        }
+
+        .scheda.active {
+            display: block; /* Mostra solo la scheda attiva */
+        }
+
+        .scheda h1 {
+            color: #2c3e50;
+        }
+
+        .scheda h3 {
+            color: #3498db;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+
+        .scheda ul {
+            list-style-type: '✓ '; /* Stile per elenchi puntati */
+            padding-left: 20px;
+        }
+
+        .scheda li {
             margin-bottom: 10px;
         }
 
-        #procedure button:hover, #rischi button:hover {
-            background-color: #0056b3;
+        /* Animazione di entrata */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <header>
-    <div style="display: flex; align-items: center; justify-content: center;">
-        <img src="IMAGE_FILE_105840.png" alt="Logo Protezione Civile Basilicata" style="height: 50px; margin-right: 10px;">
-        <h1>Sala Operativa Protezione Civile - Regione Basilicata</h1>
+
+    <div id="menu-rischi">
+        <h2>Elenco Rischi</h2>
+        <button onclick="mostraScheda('criticita')" data-target="criticita">Gestione Bollettino Criticità</button>
+        <button onclick="mostraScheda('avviso_criticita')" data-target="avviso_criticita">Gestione Avviso Criticità</button>
+        <button onclick="mostraScheda('meteo_avverse')" data-target="meteo_avverse">Gestione Avviso Meteo Avverse</button>
+        <button onclick="mostraScheda('valanghe')" data-target="valanghe">Gestione Bollettino Valanghe</button>
+        <button onclick="mostraScheda('rischio_idraulico')" data-target="rischio_idraulico">Rischio Idraulico (Soglia)</button>
+        <button onclick="mostraScheda('rischio_idrogeologico')" data-target="rischio_idrogeologico">Rischio Idrogeologico (Soglia)</button>
+        <button onclick="mostraScheda('dighe')" data-target="dighe">Rischio Grandi Dighe</button>
+        <button onclick="mostraScheda('frana_maratea')" data-target="frana_maratea">Criticità Frana Maratea</button>
+        <button onclick="mostraScheda('sismico')" data-target="sismico">Rischio Sismico</button>
+        <button onclick="mostraScheda('incendi')" data-target="incendi">Rischio Incendio Rilevante</button>
+        <button onclick="mostraScheda('persone_scomparse')" data-target="persone_scomparse">Ricerca Persone Scomparse</button>
+        <button onclick="mostraScheda('maremoto')" data-target="maremoto">Rischio Maremoto</button>
     </div>
-    <p>Gestione Procedure Operative di Emergenza</p>
-</header>
 
-    <main>
-        <section id="procedure">
-            <h2>Procedure Operative</h2>
-            <button onclick="window.location.href='gestionebollettino.html'">Gestione Bollettino di Criticità</button>
-            <button onclick="window.location.href='gestioneavvisi.html'">Gestione Avviso di Criticità</button>
-            <button onclick="window.location.href='gestioneavvisometeo.html'">Gestione Avviso Condizioni Meteorologiche Avverse</button>
-            <button onclick="window.location.href='gestionebollettinovalanghe.html'">Gestione Bollettino Valanghe</button>
-            <button onclick="window.location.href='gestioneavvisoidraulico.html'">Gestione Avviso Superamento Soglia per Rischio Idraulico</button>
-            <button onclick="window.location.href='gestioneavvisoidrogeologico.html'">Gestione Avviso Superamento Soglia per Rischio Idrogeologico</button>
-            <button onclick="window.location.href='gestioneavvisodighe.html'">Gestione Avviso Rischio Grandi Dighe</button>
-            <button onclick="window.location.href='gestionecriticitafranamaratea.html'">Gestione Criticità Frana Maratea</button>
-            <button onclick="window.location.href='gestionerischiossismico.html'">Gestione Rischio Sismico</button>
-            <button onclick="window.location.href='gestionerischioincidenterilevante.html'">Gestione Rischio Incidente Rilevante</button>
-            <button onclick="window.location.href='gestionericercapersone.html'">Gestione Ricerca Persone Scomparse</button>
-            <button onclick="window.location.href='gestionerischio maremoto.html'">Gestione Rischio Maremoto</button>
-        </section>
+    <div id="contenuto-procedura">
+        <div id="placeholder" class="scheda active">
+            <h1>Benvenuto nella Sala Operativa</h1>
+            <p>Seleziona una procedura dal menu a sinistra per iniziare.</p>
+        </div>
 
-        <section id="rischi">
-            <h2>Rischi</h2>
-            <button onclick="window.location.href='rischioincendio.html'">Incendio</button>
-            <button onclick="window.location.href='rischiodighe.html'">Dighe</button>
-            <button onclick="window.location.href='rischioidrogeologico.html'">Idrogeologico</button>
-            <button onclick="window.location.href='rischioidrico.html'">Idrico</button>
-            <button onclick="window.location.href='rischiodavalanghe.html'">Valanghe</button>
-            <button onclick="window.location.href='rischiometeo.html'">Meteo</button>
-        </section>
+        <div id="criticita" class="scheda">
+            <h1>Scheda Gestione Bollettino Criticità</h1>
+            <h3>Fase 1: Ricezione</h3>
+            <ul>
+                <li>Accedere al sistema X.</li>
+                <li>Verificare la fonte del bollettino.</li>
+            </ul>
+            <h3>Fase 2: Analisi</h3>
+            <p>Confrontare i dati con i modelli previsionali...</p>
+            </div>
 
-        <section id="tools">
-            <h2>Tools</h2>
-            <p>Qui potresti inserire link a strumenti utili o funzionalità specifiche.</p>
-            <button onclick="window.location.href='inserimentodati.html'">Inserisci Nuovi Dati Evento</button>
-        </section>
-    </main>
+        <div id="avviso_criticita" class="scheda">
+            <h1>Scheda Gestione Avviso di Criticità</h1>
+            <p>Contenuto della procedura...</p>
+            </div>
 
-    <footer>
-        <p>&copy; 2025 Protezione Civile Regione Basilicata</p>
-    </footer>
+        <div id="meteo_avverse" class="scheda">
+            <h1>Scheda Gestione Avviso Condizioni Meteorologiche Avverse</h1>
+            <p>Contenuto della procedura...</p>
+            </div>
+
+        <div id="sismico" class="scheda">
+            <h1>Scheda Gestione Rischio Sismico</h1>
+            <h3>Fase di Allerta</h3>
+            <ul>
+                <li>Attivare il protocollo di comunicazione con la Protezione Civile.</li>
+                <li>Verificare l'operatività delle squadre di primo intervento.</li>
+            </ul>
+            <p>Contenuto completo della procedura sismica...</p>
+        </div>
+
+    </div>
+
+    <script>
+        function mostraScheda(idScheda) {
+            // Nasconde tutte le schede
+            const tutteLeSchede = document.querySelectorAll('.scheda');
+            tutteLeSchede.forEach(scheda => {
+                scheda.classList.remove('active');
+            });
+
+            // Mostra solo la scheda richiesta
+            const schedaDaMostrare = document.getElementById(idScheda);
+            if (schedaDaMostrare) {
+                schedaDaMostrare.classList.add('active');
+            } else {
+                // Se non trova la scheda, mostra il messaggio di benvenuto
+                document.getElementById('placeholder').classList.add('active');
+            }
+            
+            // Aggiorna lo stile del pulsante attivo nel menu
+            const tuttiIBottoni = document.querySelectorAll('#menu-rischi button');
+            tuttiIBottoni.forEach(bottone => {
+                if (bottone.getAttribute('data-target') === idScheda) {
+                    bottone.classList.add('active');
+                } else {
+                    bottone.classList.remove('active');
+                }
+            });
+        }
+
+        // Mostra la scheda di benvenuto all'avvio
+        document.addEventListener('DOMContentLoaded', () => {
+            mostraScheda('placeholder');
+        });
+    </script>
+
 </body>
 </html>
