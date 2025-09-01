@@ -72,17 +72,34 @@
 
         .scheda h1 {
             color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
         }
 
         .scheda h3 {
             color: #3498db;
             border-left: 4px solid #3498db;
             padding-left: 10px;
+            margin-top: 30px;
+        }
+        
+        .scheda p, .scheda li {
+            line-height: 1.6;
+            color: #333;
         }
 
         .scheda ul {
-            list-style-type: '✓ '; /* Stile per elenchi puntati */
+            list-style-type: none; /* Rimuove i pallini di default */
             padding-left: 20px;
+        }
+        
+        .scheda ul li::before {
+            content: "✓"; /* Aggiunge un simbolo prima di ogni punto elenco */
+            color: #3498db;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
         }
 
         .scheda li {
@@ -121,41 +138,53 @@
         </div>
 
         <div id="criticita" class="scheda">
-            <h1>Scheda Gestione Bollettino Criticità</h1>
-            <h3>Fase 1: Ricezione</h3>
+            <h1>Gestione Bollettino di Criticità Regionale</h1>
+            <p><strong>Ricezione:</strong> Ricevuto il Bollettino di Criticità Regionale, emesso dal C.F.D. Basilicata e trasmesso in S.O.R. a mezzo FOLIUM – INFOCERT e OUTLOOK.</p>
+            
+            <h3>Inoltro ai destinatari</h3>
+            <p>Procedere con l'inoltro secondo le seguenti modalità:</p>
             <ul>
-                <li>Accedere al sistema X.</li>
-                <li>Verificare la fonte del bollettino.</li>
+                <li>Accedere al sito <code>https://protezionecivile.regione.basilicata.it/protcivbas/home.jsp</code> ed inserire nell’area riservata il proprio nome utente e password.</li>
+                <li>Effettuato l’accesso, selezionare “atti e documenti”.</li>
+                <li>Procedere accedendo a, “area riservata funzionari Protezione Civile”.</li>
+                <li>Nella sezione “Invio Mail Rischio Idrogeologico e Idraulico”, cliccare “Invia mail di notifica”, attendere l’avvenuta trasmissione ed acquisire l’orario dell’ultima mail inviata, da riportare sul report giornaliero.</li>
             </ul>
-            <h3>Fase 2: Analisi</h3>
-            <p>Confrontare i dati con i modelli previsionali...</p>
-            </div>
+
+            <h3>Pubblicazione su TELEGRAM</h3>
+            <p>Nel gruppo “Protezione Civile Basilicata”:</p>
+            <ul>
+                <li>Incollare le due righe relative a “BOLLETTINO DI CRITICITA’ REGIONALE del giorno – mese - anno” (da copiare, previo aggiornamento, dal file Word "Telegram" presente sul Desktop).</li>
+                <li>Selezionare il testo "&lt;&lt;&lt;clicca qui per visualizzare il bollettino di criticità regionale&gt;&gt;&gt;".</li>
+                <li>Con il tasto destro, selezionare "formattazione" e poi "crea link".</li>
+                <li>Incollare, sotto URL, il link relativo al Bollettino del giorno, copiato dal sito del C.F.D. Basilicata.</li>
+                <li>Cliccare "Crea" e inviare.</li>
+                <li>Inoltrare il messaggio anche al gruppo “Volontariato – Protezione Civile Basilicata”.</li>
+            </ul>
+
+            <h3>Pubblicazione su WHATSAPP CANALI</h3>
+            <p>Nel canale “PROTEZIONE CIVILE BASILICATA”:</p>
+            <ul>
+                <li>Dopo aver scritto "BOLLETTINO DI CRITICITA’ REGIONALE del giorno – mese – anno", premere "shift+invio" per andare a capo.</li>
+                <li>Incollare il link relativo al Bollettino di Criticità Regionale del giorno, copiato dal sito del C.F.D. Basilicata.</li>
+            </ul>
+        </div>
 
         <div id="avviso_criticita" class="scheda">
             <h1>Scheda Gestione Avviso di Criticità</h1>
             <p>Contenuto della procedura...</p>
-            </div>
+        </div>
 
         <div id="meteo_avverse" class="scheda">
             <h1>Scheda Gestione Avviso Condizioni Meteorologiche Avverse</h1>
             <p>Contenuto della procedura...</p>
-            </div>
-
-        <div id="sismico" class="scheda">
-            <h1>Scheda Gestione Rischio Sismico</h1>
-            <h3>Fase di Allerta</h3>
-            <ul>
-                <li>Attivare il protocollo di comunicazione con la Protezione Civile.</li>
-                <li>Verificare l'operatività delle squadre di primo intervento.</li>
-            </ul>
-            <p>Contenuto completo della procedura sismica...</p>
         </div>
-
-    </div>
+        
+        </div>
 
     <script>
         function mostraScheda(idScheda) {
-            // Nasconde tutte le schede
+            // Nasconde tutte le schede e il placeholder
+            document.getElementById('placeholder').classList.remove('active');
             const tutteLeSchede = document.querySelectorAll('.scheda');
             tutteLeSchede.forEach(scheda => {
                 scheda.classList.remove('active');
@@ -181,9 +210,10 @@
             });
         }
 
-        // Mostra la scheda di benvenuto all'avvio
+        // Al caricamento della pagina, mostra la scheda di benvenuto e nessun pulsante attivo
         document.addEventListener('DOMContentLoaded', () => {
             mostraScheda('placeholder');
+            document.querySelectorAll('#menu-rischi button').forEach(b => b.classList.remove('active'));
         });
     </script>
 
