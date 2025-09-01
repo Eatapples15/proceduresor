@@ -32,13 +32,32 @@
             padding: 20px;
             overflow-y: auto;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            display: flex; /* Utilizza flexbox per allineare logo e menu */
+            flex-direction: column; /* Impila gli elementi verticalmente */
+            align-items: center; /* Centra orizzontalmente gli elementi figli */
+        }
+
+        #logo-container {
+            margin-bottom: 20px; /* Spazio sotto il logo */
+            padding-bottom: 15px; /* Spazio extra prima del bordo */
+            border-bottom: 1px solid rgba(255,255,255,0.2); /* Sottile linea di separazione */
+            width: 100%;
+            text-align: center; /* Centra l'immagine all'interno del suo contenitore */
+        }
+
+        #logo-container img {
+            max-width: 150px; /* Dimensione massima del logo */
+            height: auto;
+            display: block; /* Rimuove lo spazio extra sotto l'immagine */
+            margin: 0 auto; /* Centra l'immagine */
         }
 
         #menu-rischi h2 {
             text-align: center;
             border-bottom: 2px solid var(--colore-accento);
             padding-bottom: 10px;
-            margin-top: 0;
+            margin-top: 20px; /* Spazio sopra il titolo dopo il logo */
+            width: 100%; /* Assicura che il bordo si estenda per tutta la larghezza */
         }
 
         #menu-rischi button {
@@ -144,6 +163,9 @@
 <body>
 
     <div id="menu-rischi">
+        <div id="logo-container">
+            <img src="IMAGE_FILE_105840.png" alt="Logo Sala Operativa">
+        </div>
         <h2>Elenco Rischi</h2>
         <button onclick="mostraScheda('criticita')" data-target="criticita">Gestione Bollettino Criticità</button>
         <button onclick="mostraScheda('avviso_criticita')" data-target="avviso_criticita">Gestione Avviso Criticità</button>
@@ -172,7 +194,7 @@
             <h3>Inoltro ai destinatari</h3>
             <h4>Accesso al sito</h4>
             <ul>
-                <li>Accedere al sito <code>https://protezionecivile.regione.basilicata.it</code> ed inserire le credenziali.</li>
+                <li>Accedere al sito <a href="https://protezionecivile.regione.basilicata.it" target="_blank">protezionecivile.regione.basilicata.it</a> ed inserire le credenziali.</li>
                 <li>Selezionare “atti e documenti” > “area riservata funzionari Protezione Civile”.</li>
                 <li>Nella sezione “Invio Mail Rischio Idrogeologico e Idraulico”, cliccare “<strong>Invia mail di notifica</strong>”, attendere la conferma e annotare l'orario sul report giornaliero.</li>
             </ul>
