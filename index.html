@@ -3,399 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOR Basilicata - Event Driven</title>
+    <title>S.O.R. Basilicata - Full Data</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #3498db;
-            --accent-hover: #2980b9;
             --bg: #f4f7f6;
             --white: #ffffff;
-            --danger: #e74c3c;
-            --warning: #f1c40f;
+            --danger: #c0392b;
+            --warning: #f39c12;
             --success: #27ae60;
             --text: #333;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; background-color: var(--bg); color: var(--text); }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; background-color: var(--bg); color: var(--text); overflow: hidden; }
 
-        /* --- LAYOUT --- */
-        #main-container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
+        /* LAYOUT */
+        #sidebar { width: 280px; background: var(--primary); color: white; padding: 20px; display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        #workspace { flex-grow: 1; padding: 40px; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        #ai-sidebar { width: 340px; background: white; border-left: 1px solid #ddd; display: flex; flex-direction: column; box-shadow: -2px 0 10px rgba(0,0,0,0.05); }
 
-        /* --- SINISTRA: DASHBOARD E STORICO --- */
-        #sidebar {
-            width: 280px;
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .logo-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
-        .logo-area h2 { margin: 0; font-size: 1.2rem; }
-        .logo-area span { font-size: 0.8rem; opacity: 0.7; }
-
+        /* UI ELEMENTS */
         .btn-new-event {
-            background-color: var(--danger);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
+            background-color: var(--danger); color: white; border: none; padding: 15px; border-radius: 6px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; display: flex; justify-content: center; gap: 10px;
+            transition: transform 0.1s; margin-bottom: 20px;
         }
         .btn-new-event:active { transform: scale(0.98); }
 
-        #active-events-list { margin-top: 30px; flex-grow: 1; }
-        .event-card {
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            border-left: 3px solid var(--warning);
-        }
-        .event-card.completed { border-left-color: var(--success); opacity: 0.6; }
-
-        /* --- CENTRO: AREA OPERATIVA --- */
-        #workspace {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        /* Schermata iniziale (Vuota) */
-        #empty-state {
-            text-align: center;
-            margin-top: 100px;
-            color: #999;
-        }
-
-        /* Wizard Scelta Evento */
-        #event-wizard {
-            display: none;
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .logo-area { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
         
-        .wizard-step { display: none; animation: fadeIn 0.3s; }
+        /* WIZARD STYLE */
+        #event-wizard { max-width: 900px; margin: 0 auto; width: 100%; }
+        .wizard-step { display: none; animation: fadeIn 0.4s; }
         .wizard-step.active { display: block; }
-
-        .grid-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
         
+        .grid-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
         .type-btn {
-            background: white;
-            border: 2px solid #ddd;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+            background: white; border: 2px solid #ddd; padding: 25px; border-radius: 8px; text-align: center;
+            cursor: pointer; font-weight: 600; transition: all 0.2s; color: var(--primary); font-size: 1.1rem;
         }
-        .type-btn:hover { border-color: var(--accent); color: var(--accent); background: #f0f8ff; }
+        .type-btn:hover { border-color: var(--accent); color: var(--accent); background: #f0f8ff; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .type-btn small { display: block; margin-top: 5px; font-weight: normal; font-size: 0.9rem; color: #666; }
+
+        /* CHECKLIST STYLE */
+        #checklist-container { display: none; background: white; padding: 0; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .checklist-header { background: var(--primary); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Checklist Operativa */
-        #checklist-container { display: none; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .task-item { display: flex; align-items: flex-start; padding: 18px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+        .task-item:hover { background: #f9f9f9; }
+        .task-item.priority-high { border-left: 5px solid var(--danger); background: #fff5f5; }
         
-        .task-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
-        }
-        .task-item:hover { background: #fafafa; }
-        
-        .task-checkbox { transform: scale(1.5); margin-right: 15px; cursor: pointer; }
+        .task-checkbox { margin-top: 5px; transform: scale(1.5); margin-right: 15px; cursor: pointer; }
         .task-content { flex-grow: 1; }
-        .task-title { font-weight: 600; font-size: 1.1rem; }
-        .task-desc { font-size: 0.9rem; color: #666; margin-top: 4px; }
+        .task-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; color: #2c3e50; }
+        .task-desc { font-size: 0.95rem; color: #555; line-height: 1.5; }
+        .task-desc a { color: var(--accent); text-decoration: none; font-weight: 500; }
+        .task-desc strong { color: #000; }
         
-        .task-meta { font-size: 0.8rem; color: #999; margin-left: 10px; }
-
-        /* --- DESTRA: AI COPILOT --- */
-        #ai-sidebar {
-            width: 320px;
-            background: white;
-            border-left: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #ai-header { padding: 20px; background: var(--accent); color: white; display: flex; align-items: center; gap: 10px; }
-        #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; }
-        
-        .msg { margin-bottom: 15px; padding: 12px; border-radius: 8px; font-size: 0.95rem; line-height: 1.4; max-width: 90%; }
-        .msg.ai { background: #e3f2fd; color: #2c3e50; border-bottom-left-radius: 0; align-self: flex-start; }
-        .msg.user { background: #2c3e50; color: white; border-bottom-right-radius: 0; align-self: flex-end; margin-left: auto; }
-        
-        .ai-status { font-size: 0.75rem; color: #666; padding: 10px; border-top: 1px solid #eee; background: #fff; text-align: center; }
+        /* AI CHAT */
+        #ai-header { padding: 15px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; font-weight: bold; }
+        #ai-chat { flex-grow: 1; padding: 15px; overflow-y: auto; background: #fcfcfc; }
+        .msg { margin-bottom: 12px; padding: 12px; border-radius: 8px; font-size: 0.9rem; line-height: 1.4; max-width: 90%; word-wrap: break-word; }
+        .msg.ai { background: #e8f4fd; color: #2c3e50; border: 1px solid #d6eaf8; border-bottom-left-radius: 0; }
+        .msg.user { background: #34495e; color: white; margin-left: auto; border-bottom-right-radius: 0; }
+        .ai-typing { font-style: italic; color: #999; font-size: 0.8rem; margin: 10px; display: none; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Utility buttons for wizard */
-        .btn-confirm { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 4px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="main-container">
-        <div id="sidebar">
-            <div class="logo-area">
-                <h2>S.O.R. BASILICATA</h2>
-                <span>Sistema Supporto decisionale</span>
-            </div>
-            <button class="btn-new-event" onclick="startNewEvent()">
-                <span>+</span> NUOVO EVENTO
-            </button>
-            <div id="active-events-list">
-                <h4 style="border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px;">Eventi in corso</h4>
-                </div>
+    <div id="sidebar">
+        <div class="logo-area">
+            <h3>S.O.R. BASILICATA</h3>
+            <span>Supporto Decisionale</span>
         </div>
-
-        <div id="workspace">
-            
-            <div id="empty-state">
-                <h1>Sala Operativa pronta.</h1>
-                <p>Nessun evento attivo selezionato. Clicca su "Nuovo Evento" per iniziare il triage.</p>
-            </div>
-
-            <div id="event-wizard">
-                
-                <div id="step-1" class="wizard-step active">
-                    <h2>Cosa sta succedendo?</h2>
-                    <p>Seleziona la macro-categoria dell'evento per avviare il protocollo.</p>
-                    <div class="grid-buttons">
-                        <div class="type-btn" onclick="selectCategory('SISMICO')">☢️ Rischio Sismico</div>
-                        <div class="type-btn" onclick="selectCategory('IDRO')">💧 Rischio Idraulico / Meteo</div>
-                        <div class="type-btn" onclick="selectCategory('DIGHE')">🚧 Rischio Dighe</div>
-                        <div class="type-btn" onclick="selectCategory('INCENDI')">🔥 Incendi / AIB</div>
-                        <div class="type-btn" onclick="selectCategory('RICERCA')">🔍 Ricerca Persone</div>
-                    </div>
-                </div>
-
-                <div id="step-2" class="wizard-step">
-                    <h2 id="step-2-title">Dettaglio Evento</h2>
-                    <div id="step-2-content"></div>
-                    </div>
-
-            </div>
-
-            <div id="checklist-container">
-                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:15px; margin-bottom:20px;">
-                    <h2 id="procedure-title" style="margin:0; color:var(--primary);">Titolo Procedura</h2>
-                    <span id="procedure-code" style="background:#eee; padding:5px 10px; border-radius:4px; font-family:monospace;">CODE-001</span>
-                </div>
-                <div id="tasks-list">
-                    </div>
-            </div>
-
-        </div>
-
-        <div id="ai-sidebar">
-            <div id="ai-header">
-                <div style="font-weight:bold; font-size:1.1rem;">AI Supervisor</div>
-            </div>
-            <div id="ai-chat">
-                <div class="msg ai">
-                    Ciao. Sono in ascolto. <br>
-                    Quando segnali un nuovo evento, ti aiuterò a selezionare la procedura corretta e monitorerò i tempi di esecuzione.
-                </div>
-            </div>
-            <div class="ai-status">
-                Stato: 🟢 Monitoraggio attivo
-            </div>
+        <button class="btn-new-event" onclick="resetApp()">
+            <span>+</span> NUOVO EVENTO
+        </button>
+        <div style="flex-grow:1; overflow-y:auto;">
+            <small style="text-transform:uppercase; color:rgba(255,255,255,0.5);">Storico Sessione</small>
+            <div id="event-log" style="margin-top:10px; font-size:0.9rem;"></div>
         </div>
     </div>
 
+    <div id="workspace">
+        
+        <div id="step-1" class="wizard-step active">
+            <h1 style="color:var(--primary); text-align:center;">Seleziona Tipologia Evento</h1>
+            <p style="text-align:center; color:#666;">Seleziona la macro-categoria per avviare il protocollo operativo.</p>
+            
+            <div class="grid-buttons">
+                <div class="type-btn" onclick="goToStep2('BOLLETTINI')">📄 Bollettini & Meteo<br><small>Criticità, Avvisi, Valanghe</small></div>
+                <div class="type-btn" onclick="goToStep2('IDRO')">💧 Idraulico / Idrogeologico<br><small>Soglie Fiumi e Piogge</small></div>
+                <div class="type-btn" onclick="goToStep2('SISMICO')">☢️ Rischio Sismico<br><small>Terremoti ML > 3.0</small></div>
+                <div class="type-btn" onclick="goToStep2('DIGHE')">🚧 Grandi Dighe<br><small>Vigilanza, Preallarme, Allarme</small></div>
+                <div class="type-btn" onclick="goToStep2('MARATEA')">⛰️ Frana Maratea<br><small>Procedure specifiche SS18</small></div>
+                <div class="type-btn" onclick="goToStep2('INDUSTRIALE')">🏭 Rischio Industriale<br><small>Incidente Rilevante</small></div>
+                <div class="type-btn" onclick="goToStep2('RICERCA')">🔍 Persone Scomparse<br><small>Attivazione Piani</small></div>
+                <div class="type-btn" onclick="goToStep2('MAREMOTO')">🌊 Rischio Maremoto<br><small>Allerta SIAM</small></div>
+            </div>
+        </div>
+
+        <div id="step-2" class="wizard-step">
+            <button onclick="backToStep1()" style="background:none; border:none; color:#666; cursor:pointer; margin-bottom:10px;">← Indietro</button>
+            <h2 id="step-2-title" style="color:var(--primary);">Specifica Evento</h2>
+            <div id="step-2-content" class="grid-buttons"></div>
+        </div>
+
+        <div id="checklist-container">
+            <div class="checklist-header">
+                <div>
+                    <h2 id="proc-title" style="margin:0;">Titolo Procedura</h2>
+                    <span id="proc-code" style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:4px; font-size:0.8rem;">CODE</span>
+                </div>
+                <button onclick="alert('Report PDF generato (simulazione)')" style="background:white; color:var(--primary); border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">Stampa Report</button>
+            </div>
+            <div id="tasks-list"></div>
+        </div>
+
+    </div>
+
+    <div id="ai-sidebar">
+        <div id="ai-header">🤖 AI Copilot</div>
+        <div id="ai-chat">
+            <div class="msg ai">Ciao. Seleziona un evento per iniziare. Ti guiderò attraverso le procedure specifiche che mi hai fornito.</div>
+        </div>
+        <div class="ai-typing" id="ai-typing">L'assistente sta scrivendo...</div>
+    </div>
+
     <script>
-        // --- DATABASE PROCEDURE (LOGICA) ---
-        // Qui definiamo l'albero decisionale
-        const protocols = {
+        // --- DATABASE COMPLETO DELLE PROCEDURE ---
+        const DB = {
+            'BOLLETTINI': {
+                title: "Gestione Bollettini e Avvisi Meteo",
+                options: [
+                    { id: 'bollettino_criticita', label: "Bollettino Criticità", sub: "Quotidiano (CFD)" },
+                    { id: 'avviso_criticita', label: "Avviso di Criticità", sub: "Allerte Gialla/Arancione/Rossa" },
+                    { id: 'meteo_avverse', label: "Meteo Avverse", sub: "Avviso DPC" },
+                    { id: 'valanghe', label: "Bollettino Valanghe", sub: "Meteomont" }
+                ]
+            },
+            'IDRO': {
+                title: "Rischio Idraulico e Idrogeologico",
+                options: [
+                    { id: 'rischio_idraulico', label: "Soglia Idraulico (Fiumi)", sub: "Superamento soglia idrometro" },
+                    { id: 'rischio_idrogeologico', label: "Soglia Idrogeologico", sub: "Superamento soglia pluviometro" }
+                ]
+            },
             'SISMICO': {
-                questions: [
-                    { label: "Magnitudo < 3.0", value: "low", risk: "Monitoraggio" },
-                    { label: "Magnitudo >= 3.0", value: "high", risk: "ALLERTA" }
-                ],
-                procedures: {
-                    'low': {
-                        title: "Evento Sismico Minore (ML < 3.0)",
-                        code: "SIS-01",
-                        tasks: [
-                            { title: "Verifica INGV", desc: "Controlla i dati definitivi sul sito INGV." },
-                            { title: "Log Evento", desc: "Registra l'evento nel diario di sala." }
-                        ]
-                    },
-                    'high': {
-                        title: "Evento Sismico Rilevante (ML >= 3.0)",
-                        code: "SIS-02-URG",
-                        tasks: [
-                            { title: "Verifica Epicentro e Comuni", desc: "Identifica i comuni entro 20km dall'epicentro.", priority: "high" },
-                            { title: "Chiamata Rapida Sindaci", desc: "Contattare telefonicamente i Sindaci dei comuni coinvolti.", priority: "high" },
-                            { title: "Verifica Danni", desc: "Chiedere esplicitamente: Ci sono crolli? Ci sono feriti?", priority: "med" },
-                            { title: "Attivazione Volontariato", desc: "Preallertare associazioni locali se richiesto dai Sindaci.", priority: "low" }
-                        ]
-                    }
-                }
+                title: "Rischio Sismico",
+                options: [
+                    { id: 'sismico_low', label: "Evento < 3.0 ML", sub: "Monitoraggio" },
+                    { id: 'sismico_high', label: "Evento >= 3.0 ML", sub: "Attivazione Procedure" }
+                ]
             },
             'DIGHE': {
-                questions: [
-                    { label: "Fase di VIGILANZA", value: "vigilanza", risk: "Ordinario" },
-                    { label: "Fase di PREALLARME", value: "preallarme", risk: "Attenzione" },
-                    { label: "Fase di ALLARME", value: "allarme", risk: "CRITICO" }
-                ],
-                procedures: {
-                    'allarme': {
-                        title: "Rischio Dighe - Fase ALLARME",
-                        code: "DIG-03-RED",
-                        tasks: [
-                            { title: "Sirene", desc: "Verificare attivazione sirene a valle.", priority: "high" },
-                            { title: "Prefettura", desc: "Comunicazione immediata Prefettura (Linea dedicata).", priority: "high" },
-                            { title: "Evacuazione", desc: "Supportare i sindaci nelle procedure di evacuazione aree golenali.", priority: "high" }
-                        ]
-                    }
-                    // Altri casi omessi per brevità...
-                }
+                title: "Rischio Grandi Dighe",
+                options: [
+                    { id: 'dighe_gen', label: "Attivazione Procedura Diga", sub: "Qualsiasi fase (Vigilanza/Allarme)" }
+                ]
+            },
+            'MARATEA': {
+                title: "Criticità Frana Maratea",
+                options: [
+                    { id: 'frana_maratea', label: "Attivazione Procedura SS18", sub: "Allerta Meteo o Soglie Pluviometriche" }
+                ]
+            },
+            'INDUSTRIALE': {
+                title: "Incidente Rilevante (RIR)",
+                options: [
+                    { id: 'rir_verde', label: "Allerta VERDE", sub: "Nessuna ripercussione esterna" },
+                    { id: 'rir_gialla', label: "Allerta GIALLA", sub: "Possibile allarme popolazione" }
+                ]
+            },
+            'RICERCA': {
+                title: "Ricerca Persone Scomparse",
+                options: [
+                    { id: 'ricerca_gialla', label: "Segnalazione (Gialla)", sub: "In attesa attivazione Prefettura" },
+                    { id: 'ricerca_rossa', label: "Attivazione (Rossa)", sub: "Piano Attivato da Prefettura" }
+                ]
+            },
+            'MAREMOTO': {
+                title: "Rischio Maremoto (SIAM)",
+                options: [
+                    { id: 'maremoto_info', label: "Information", sub: "Improbabile impatto" },
+                    { id: 'maremoto_watch', label: "Watch / Advisory (Rosso/Arancione)", sub: "Onda prevista" }
+                ]
             }
         };
 
-        // --- STATO DELL'APPLICAZIONE ---
-        let currentCategory = null;
+        // --- TASKS CONTENT (Contenuto fornito dall'utente) ---
+        const PROCEDURES = {
+            'bollettino_criticita': {
+                title: "Bollettino Criticità Regionale",
+                code: "METEO-01",
+                tasks: [
+                    { t: "Accesso Sito", d: "Accedi a <a href='https://protezionecivile.regione.basilicata.it' target='_blank'>protezionecivile.regione.basilicata.it</a> > atti e documenti > area riservata." },
+                    { t: "Invio Notifica Email", d: "Sezione 'Invio Mail Rischio Idrogeologico': clicca 'Invia mail di notifica'. Attendi conferma." },
+                    { t: "Telegram", d: "Gruppo 'Protezione Civile Basilicata': Incolla testo 'BOLLETTINO DI CRITICITA’ REGIONALE del...' + Link dal sito CFD." },
+                    { t: "WhatsApp Canali", d: "Canale 'PROTEZIONE CIVILE BASILICATA': Scrivi 'BOLLETTINO...' + Link (Shift+Invio)." }
+                ]
+            },
+            'avviso_criticita': {
+                title: "Avviso di Criticità Regionale",
+                code: "METEO-02-ALERT",
+                tasks: [
+                    { t: "Protocollo e PDF", d: "Protocolla Avviso. Crea PDF unico (Copertina + Avviso) nominato: <strong>ALLERTA PROTEZIONE CIVILE N. …</strong>" },
+                    { t: "PEC Basi", d: "Invia a 'BASI INTERESSATE' o 'BASI TUTTE'. Oggetto: Nome del file PDF. Testo standard." },
+                    { t: "Telegram", d: "Gruppo 'PC Basilicata': Allega PDF e testo standard. Inoltra a 'Volontariato'." },
+                    { t: "Fax Prefettura", d: "VoiSmart > Prefettura PZ. Nota: 'ALLERTA PC N...', Priorità 5." },
+                    { t: "WhatsApp Gruppi", d: "Invia PDF e testo ai gruppi BASI (A1, A2, B, C, D, E1, E2) interessati." },
+                    { t: "Chiamate (Se Arancione/Rossa)", d: "Contattare via radio/telefono i Sindaci dei comuni interessati da eventi in atto.", p: "high" }
+                ]
+            },
+            'meteo_avverse': {
+                title: "Avviso Condizioni Meteo Avverse",
+                code: "METEO-03-DPC",
+                tasks: [
+                    { t: "Protocollo e PDF", d: "Protocolla avviso DPC. Crea PDF 'ALLERTA PROTEZIONE CIVILE N...'" },
+                    { t: "PEC", d: "A: 'BASI INTERESSATE'. Oggetto: Nome file PDF." },
+                    { t: "Fax Prefettura", d: "A: Prefettura PZ. Priorità 5." },
+                    { t: "WhatsApp Gruppi", d: "Invia PDF ai gruppi BASI interessati." }
+                ]
+            },
+            'valanghe': {
+                title: "Bollettino Valanghe (Meteomont)",
+                code: "NEVE-01",
+                tasks: [
+                    { t: "PEC", d: "A: 'BOLLETTINO VALANGHE – CRITICITA’'. Oggetto: 'BOLLETTINO VALANGHE N. … ore 14:00'." },
+                    { t: "Telegram", d: "Gruppo 'PC Basilicata': Oggetto + PDF. Inoltra a 'Volontariato'." },
+                    { t: "WhatsApp Canale", d: "Link: <a href='https://meteomont.carabinieri.it' target='_blank'>meteomont.carabinieri.it</a>" }
+                ]
+            },
+            'rischio_idraulico': {
+                title: "Superamento Soglia Idraulica",
+                code: "IDRO-01",
+                tasks: [
+                    { t: "Verifica Dati", d: "Controlla livello idrometrico e trend su piattaforma monitoraggio.", p: "high" },
+                    { t: "PEC Gruppo Idro", d: "A: GRUPPO IDRO (da avviso) + PREFETTURE MT/PZ. Oggetto: 'AVVISO SUPERAMENTO SOGLIA RISCHIO IDRAULICO - [DATA] - [STAZIONE] - [LIVELLO]'." },
+                    { t: "WhatsApp Sindaci", d: "Inviare testo oggetto + file ai Sindaci interessati." },
+                    { t: "TELEFONATE PRIORITARIE", d: "Chiama: Sindaci, Prefetture, ANAS, VVF. <br><strong>Per TORRE ACCIO:</strong> Ing. MORISCO 3470717183, Sig. MONTANARO 3339222901.", p: "high" }
+                ]
+            },
+            'rischio_idrogeologico': {
+                title: "Superamento Soglia Idrogeologica",
+                code: "IDRO-02",
+                tasks: [
+                    { t: "PEC Gruppo Pluvio", d: "A: GRUPPO PLUVIO + PREFETTURE. Oggetto: 'AVVISO SUPERAMENTO SOGLIA RISCHIO IDROGEOLOGICO - [PLUVIOMETRO]'." },
+                    { t: "Fax Prefettura PZ", d: "Se provincia PZ. Stesso oggetto." },
+                    { t: "Contatto Sindaci", d: "WhatsApp + Telefonata ai comuni interessati.", p: "high" }
+                ]
+            },
+            'dighe': {
+                title: "Rischio Grandi Dighe",
+                code: "DIGHE-01",
+                tasks: [
+                    { t: "PDF Unico", d: "Copertina + Avviso. Nome: 'ALLERTA PROTEZIONE CIVILE N...'" },
+                    { t: "PEC Gruppo Diga", d: "A: GRUPPO DIGA (da avviso). Oggetto: 'ALLERTA PC - [DATA] - DIGA [NOME] - RISCHIO [TIPO] - FASE [FASE]'." },
+                    { t: "Comunicazioni Urgenti", d: "Chiama Prefettura e Sindaci dei comuni a valle.", p: "high" }
+                ]
+            },
+            'frana_maratea': {
+                title: "Criticità Frana Maratea (SS18)",
+                code: "MARATEA-URGENT",
+                tasks: [
+                    { t: "Verifica Condizioni", d: "Attivazione se: Criticità Arancione/Rossa BASI D oppure Soglia Pluviometri Maratea superata." },
+                    { t: "PEC Maratea", d: "A: 'CRITICITA’ FRANA MARATEA'. Oggetto: 'AVVISO [TIPO] - ZONA BASI D'." },
+                    { t: "CHIAMA COMMISSARIO", d: "<strong>Avv. ALBANESE Cesare: 339 2011917</strong> (o 0973 874231)", p: "high" },
+                    { t: "CHIAMA VV.UU.", d: "<strong>Com.te FIORENZANO: 333 6386897</strong> (o 0973 877982)", p: "high" },
+                    { t: "CHIAMA ANAS", d: "Resp. Sala Op. Geom. ROCCO: 349 4399018. (Alt: Ing. PULLANO 335 7460017)" }
+                ]
+            },
+            'sismico_high': {
+                title: "Evento Sismico (ML >= 3.0)",
+                code: "SISMA-MAJOR",
+                tasks: [
+                    { t: "Verifica INGV", d: "Conferma magnitudo e epicentro su <a href='http://terremoti.ingv.it' target='_blank'>terremoti.ingv.it</a>.", p: "high" },
+                    { t: "Giro Telefonico (20km)", d: "Contattare <strong>TUTTI</strong> i comuni nel raggio di 20km. Chiedere danni a persone o cose.", p: "high" },
+                    { t: "Attivazione Volontariato", d: "Previa autorizzazione, inviare associazioni per assistenza popolazione." }
+                ]
+            },
+            'rir_gialla': {
+                title: "Incidente Rilevante - Allerta GIALLA",
+                code: "IND-02",
+                tasks: [
+                    { t: "Ricezione Comunicazione", d: "Ricevere info dal Gestore Aziendale." },
+                    { t: "Attuazione PEE", d: "Applicare procedure del Piano Emergenza Esterna specifico (Vedi sito Prefettura)." },
+                    { t: "Volontariato", d: "Su richiesta CCS, attivare volontari per popolazione." }
+                ]
+            },
+            'ricerca_gialla': {
+                title: "Persone Scomparse - Segnalazione",
+                code: "MISSING-01",
+                tasks: [
+                    { t: "Info Prefettura", d: "Informare Prefettura e attendere PEC 'Attivazione Piano'.", p: "high" },
+                    { t: "Preallerta", d: "Preallertare funzionario per UCL e Volontariato." }
+                ]
+            },
+            'maremoto_watch': {
+                title: "Maremoto - Watch/Advisory",
+                code: "TSUNAMI-RED",
+                tasks: [
+                    { t: "CHIAMATA URGENTE IONICA", d: "Chiama: Nova Siri, Rotondella, Scanzano, Policoro, Pisticci, Bernalda.", p: "high" },
+                    { t: "CHIAMATA URGENTE TIRRENICA", d: "Chiama: Maratea.", p: "high" },
+                    { t: "Verifica Ricezione", d: "Accertarsi che abbiano ricevuto messaggio SIAM e attivato procedure." }
+                ]
+            },
+            // Fallbacks
+            'dighe_gen': { title: "Procedura Diga Generica", code: "DIG-GEN", tasks: [{ t: "Vedi Scheda", d: "Seguire procedura standard." }] },
+            'sismico_low': { title: "Sisma < 3.0", code: "SIS-MIN", tasks: [{ t: "Monitoraggio", d: "Nessuna azione immediata prevista se non segnalazioni." }] },
+            'rir_verde': { title: "RIR Verde", code: "IND-01", tasks: [{ t: "Monitoraggio", d: "Verifica eventuali segnalazioni." }] },
+            'ricerca_rossa': { title: "Ricerca - Attivazione", code: "MISSING-02", tasks: [{ t: "Invio Funzionario", d: "Inviare funzionario all'UCL." }, { t: "SIGER", d: "Aprire evento su SIGER." }] },
+            'maremoto_info': { title: "Maremoto - Info", code: "TSUNAMI-INFO", tasks: [{ t: "Monitoraggio", d: "Possibili correnti anomale." }] }
+        };
 
-        // --- FUNZIONI UI ---
+        // --- APP LOGIC ---
 
-        function startNewEvent() {
-            document.getElementById('empty-state').style.display = 'none';
-            document.getElementById('checklist-container').style.display = 'none';
-            document.getElementById('event-wizard').style.display = 'block';
+        function resetApp() {
             document.getElementById('step-1').classList.add('active');
             document.getElementById('step-2').classList.remove('active');
-            
-            addAiMessage("Avvio procedura Triage. Seleziona la tipologia di rischio.");
+            document.getElementById('checklist-container').style.display = 'none';
+            aiSay("Pronto per un nuovo evento. Seleziona la categoria.");
         }
 
-        function selectCategory(cat) {
-            currentCategory = cat;
+        function goToStep2(category) {
             document.getElementById('step-1').classList.remove('active');
+            document.getElementById('step-2').classList.add('active');
             
-            // Costruisci il passo 2 in base alla categoria
-            const step2Div = document.getElementById('step-2');
-            const contentDiv = document.getElementById('step-2-content');
-            const protocolData = protocols[cat];
-
-            if (!protocolData) {
-                alert("Protocollo non ancora digitalizzato in questa demo.");
-                startNewEvent();
-                return;
-            }
-
-            // AI parla
-            addAiMessage("Ho recepito: <strong>" + cat + "</strong>. <br>Ora ho bisogno di parametrare l'evento per scegliere la procedura corretta.");
-
-            // Genera bottoni scelta
-            let html = `<div class="grid-buttons">`;
-            protocolData.questions.forEach(q => {
-                html += `<div class="type-btn" onclick="activateProcedure('${q.value}')">${q.label}<br><small>${q.risk}</small></div>`;
-            });
-            html += `</div>`;
+            const data = DB[category];
+            document.getElementById('step-2-title').innerText = data.title;
             
-            contentDiv.innerHTML = html;
-            step2Div.classList.add('active');
-        }
-
-        function activateProcedure(variant) {
-            const data = protocols[currentCategory].procedures[variant];
+            const container = document.getElementById('step-2-content');
+            container.innerHTML = "";
             
-            if(!data) {
-                // Fallback demo per varianti non definite nel JSON sopra
-                alert("Procedura demo non presente per questa variante."); 
-                return;
-            }
-
-            // 1. Nascondi Wizard e Mostra Checklist
-            document.getElementById('event-wizard').style.display = 'none';
-            const checkContainer = document.getElementById('checklist-container');
-            checkContainer.style.display = 'block';
-
-            // 2. Popola Intestazione
-            document.getElementById('procedure-title').innerText = data.title;
-            document.getElementById('procedure-code').innerText = data.code;
-
-            // 3. Popola Tasks
-            const list = document.getElementById('tasks-list');
-            list.innerHTML = "";
-            
-            data.tasks.forEach((task, index) => {
-                const isHighPriority = task.priority === 'high';
-                const styleBorder = isHighPriority ? 'border-left: 4px solid #e74c3c;' : '';
-                
-                list.innerHTML += `
-                    <div class="task-item" style="${styleBorder}">
-                        <input type="checkbox" class="task-checkbox" id="task-${index}" onchange="checkProgress()">
-                        <div class="task-content">
-                            <div class="task-title">${task.title} ${isHighPriority ? '<span style="color:red; font-size:0.8rem;">(PRIORITARIO)</span>' : ''}</div>
-                            <div class="task-desc">${task.desc}</div>
-                        </div>
-                        <div class="task-meta" id="meta-${index}">Pending</div>
+            data.options.forEach(opt => {
+                container.innerHTML += `
+                    <div class="type-btn" onclick="loadProcedure('${opt.id}')">
+                        ${opt.label}
+                        <small>${opt.sub}</small>
                     </div>
                 `;
             });
 
-            // 4. Aggiungi alla sidebar eventi attivi
-            const eventList = document.getElementById('active-events-list');
-            eventList.innerHTML += `<div class="event-card">${data.title} <br><small>In corso...</small></div>`;
-
-            // 5. AI Supporto Decisionale
-            addAiMessage(`Procedura <strong>${data.code}</strong> attivata.<br>Ho generato la checklist operativa. <br><br>⚠️ <strong>ATTENZIONE:</strong> I task segnati in rosso sono bloccanti/prioritari. Eseguili per primi.`);
+            aiSay(`Hai scelto <strong>${data.title}</strong>.<br>Definisci ora lo scenario specifico per caricare la checklist corretta.`);
         }
 
-        function checkProgress() {
-            const total = document.querySelectorAll('.task-checkbox').length;
-            const checked = document.querySelectorAll('.task-checkbox:checked').length;
+        function backToStep1() {
+            document.getElementById('step-2').classList.remove('active');
+            document.getElementById('step-1').classList.add('active');
+        }
+
+        function loadProcedure(procId) {
+            document.getElementById('step-2').classList.remove('active');
+            document.getElementById('checklist-container').style.display = 'block';
+
+            const proc = PROCEDURES[procId];
             
-            // Aggiorna timestamp sui task fatti
-            document.querySelectorAll('.task-checkbox').forEach((box, idx) => {
-                const meta = document.getElementById(`meta-${idx}`);
-                if(box.checked && meta.innerText === "Pending") {
-                    const now = new Date();
-                    meta.innerText = "Eseguito: " + now.toLocaleTimeString();
-                    meta.style.color = "green";
-                }
+            // Header
+            document.getElementById('proc-title').innerText = proc.title;
+            document.getElementById('proc-code').innerText = proc.code;
+
+            // List
+            const list = document.getElementById('tasks-list');
+            list.innerHTML = "";
+
+            proc.tasks.forEach((item, idx) => {
+                const isHigh = item.p === 'high';
+                list.innerHTML += `
+                    <div class="task-item ${isHigh ? 'priority-high' : ''}">
+                        <input type="checkbox" class="task-checkbox" onchange="checkTask(this, '${proc.title}')">
+                        <div class="task-content">
+                            <div class="task-title">${item.t} ${isHigh ? '<span style="color:red; font-size:0.8rem;">(PRIORITÀ)</span>' : ''}</div>
+                            <div class="task-desc">${item.d}</div>
+                        </div>
+                    </div>
+                `;
             });
 
-            // AI Feedback sul progresso
-            if (checked === 1 && total > 1) {
-                addAiMessage("Primo step completato. Continua così. Ricorda di registrare tutto su SIGER a fine emergenza.");
-            }
-            if (checked === total) {
-                addAiMessage("✅ <strong>Procedura Completata.</strong><br>Tutti i passaggi sono stati spuntati. Puoi archiviare l'evento.");
+            // Log
+            const log = document.getElementById('event-log');
+            log.innerHTML = `<div>• ${proc.title} <span style="color:#999; font-size:0.8em;">${new Date().toLocaleTimeString()}</span></div>` + log.innerHTML;
+
+            // AI Context
+            let aiText = `Procedura attivata: <strong>${proc.title}</strong>.<br>`;
+            if(procId === 'frana_maratea') aiText += "⚠️ Ricorda: I contatti telefonici con il Commissario hanno priorità assoluta sulla PEC.";
+            if(procId === 'rischio_idraulico') aiText += "⚠️ Monitora costantemente i livelli. Se è notte, chiama i Sindaci, non limitarti a WhatsApp.";
+            if(procId.includes('sismico')) aiText += "⚠️ Usa solo dati INGV confermati.";
+            
+            aiSay(aiText + "<br><br>Spunta i task man mano che li completi.");
+        }
+
+        function checkTask(checkbox, procName) {
+            if(checkbox.checked) {
+                // Feedback AI casuale
+                if(Math.random() > 0.7) aiSay("Registrato. Procedi con il prossimo step.");
             }
         }
 
-        // Funzione helper per chat AI
-        function addAiMessage(text) {
+        function aiSay(html) {
             const chat = document.getElementById('ai-chat');
-            const div = document.createElement('div');
-            div.className = 'msg ai';
-            div.innerHTML = text;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight; // Auto scroll
+            const typing = document.getElementById('ai-typing');
+            
+            typing.style.display = 'block';
+            setTimeout(() => {
+                typing.style.display = 'none';
+                chat.innerHTML += `<div class="msg ai">${html}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
         }
 
     </script>
