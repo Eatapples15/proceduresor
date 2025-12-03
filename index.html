@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedure Sala Operativa</title>
+    <title>S.O.R. Basilicata - AI Assisted</title>
     <style>
         :root {
             --colore-primario: #2c3e50;
@@ -11,6 +11,8 @@
             --colore-accento: #3498db;
             --colore-sfondo: #f0f2f5;
             --colore-testo: #333;
+            --ai-bg: #ffffff;
+            --ai-bubble: #e8f4fd;
             --allerta-verde: #27ae60;
             --allerta-gialla: #f1c40f;
             --allerta-arancione: #e67e22;
@@ -23,358 +25,265 @@
             display: flex;
             height: 100vh;
             background-color: var(--colore-sfondo);
+            overflow: hidden; /* Evita scroll bar sul body */
         }
 
+        /* --- COLONNA 1: MENU --- */
         #menu-rischi {
-            width: 320px;
+            width: 300px;
+            min-width: 300px;
             background-color: var(--colore-primario);
             color: white;
             padding: 20px;
             overflow-y: auto;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            display: flex; /* Utilizza flexbox per allineare logo e menu */
-            flex-direction: column; /* Impila gli elementi verticalmente */
-            align-items: center; /* Centra orizzontalmente gli elementi figli */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
         }
 
         #logo-container {
-            margin-bottom: 20px; /* Spazio sotto il logo */
-            padding-bottom: 15px; /* Spazio extra prima del bordo */
-            border-bottom: 1px solid rgba(255,255,255,0.2); /* Sottile linea di separazione */
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
             width: 100%;
-            text-align: center; /* Centra l'immagine all'interno del suo contenitore */
+            text-align: center;
         }
 
         #logo-container img {
-            max-width: 150px; /* Dimensione massima del logo */
+            max-width: 120px;
             height: auto;
-            display: block; /* Rimuove lo spazio extra sotto l'immagine */
-            margin: 0 auto; /* Centra l'immagine */
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%; /* Tocco estetico se non c'è logo */
+            background: #fff;
+            padding: 10px;
         }
 
         #menu-rischi h2 {
+            font-size: 1.2rem;
             text-align: center;
             border-bottom: 2px solid var(--colore-accento);
             padding-bottom: 10px;
-            margin-top: 20px; /* Spazio sopra il titolo dopo il logo */
-            width: 100%; /* Assicura che il bordo si estenda per tutta la larghezza */
+            margin-top: 10px;
+            width: 100%;
         }
 
         #menu-rischi button {
             display: block;
             width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
             background-color: var(--colore-secondario);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-left: 4px solid transparent;
+            border-radius: 4px;
             cursor: pointer;
             text-align: left;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.2s;
+            font-size: 15px;
+            transition: all 0.2s;
         }
 
         #menu-rischi button:hover {
             background-color: #4e6a85;
-            transform: scale(1.02);
+            padding-left: 18px;
         }
 
         #menu-rischi button.active {
-            background-color: var(--colore-accento);
+            background-color: #3e5871;
+            border-left: 4px solid var(--colore-accento);
+            font-weight: bold;
         }
 
+        /* --- COLONNA 2: PROCEDURA (CENTRALE) --- */
         #contenuto-procedura {
             flex-grow: 1;
             padding: 40px;
             overflow-y: auto;
+            background: white;
+            border-right: 1px solid #ddd;
         }
 
         .scheda {
             display: none;
-            animation: fadeIn 0.5s;
+            animation: fadeIn 0.4s ease-in-out;
+            max-width: 900px; /* Per non avere righe troppo lunghe */
+            margin: 0 auto;
         }
 
-        .scheda.active {
-            display: block;
-        }
+        .scheda.active { display: block; }
 
-        .scheda h1 {
-            color: var(--colore-primario);
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .scheda h3 {
-            color: var(--colore-accento);
-            border-left: 4px solid var(--colore-accento);
-            padding-left: 10px;
-            margin-top: 35px;
-        }
+        .scheda h1 { color: var(--colore-primario); border-bottom: 2px solid #eee; padding-bottom: 15px; font-size: 2rem;}
+        .scheda h3 { color: var(--colore-accento); margin-top: 30px; font-size: 1.4rem; }
+        .scheda h4 { color: var(--colore-primario); margin-top: 20px; font-weight: 700; }
+        .scheda p, .scheda li { font-size: 1.1rem; line-height: 1.6; color: #444; }
         
-        .scheda h4 {
-            color: var(--colore-primario);
-            margin-top: 25px;
-            font-weight: 600;
-        }
-        
-        .scheda p, .scheda li {
-            font-size: 18px; /* Aumentato per migliore leggibilità */
-            line-height: 1.7; /* Aumentato per migliore leggibilità */
-            color: var(--colore-testo);
-        }
-
-        .scheda ul {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-        
-        .scheda ul li::before {
-            content: "✓";
-            color: var(--colore-accento);
-            font-weight: bold;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1em;
-        }
-
-        .scheda li { margin-bottom: 12px; }
+        .scheda ul { list-style-type: none; padding-left: 20px; }
+        .scheda ul li::before { content: "✓"; color: var(--colore-accento); font-weight: bold; display: inline-block; width: 1.2em; margin-left: -1.2em; }
+        .scheda li { margin-bottom: 10px; }
         
         .contatto {
-            background-color: #e9ecef;
+            background-color: #f8f9fa;
             border-left: 4px solid var(--colore-secondario);
-            padding: 10px 15px;
+            padding: 12px;
             margin: 10px 0;
-            border-radius: 4px;
+            border-radius: 0 4px 4px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
         }
-        
-        /* Stili per le allerte */
+
+        /* --- COLONNA 3: AI ASSISTANT (DESTRA) --- */
+        #ai-assistant {
+            width: 350px;
+            min-width: 350px;
+            background-color: var(--ai-bg);
+            border-left: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        #ai-header {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #ai-icon {
+            font-size: 24px;
+            background: white;
+            color: var(--colore-accento);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        #ai-body {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #fcfcfc;
+        }
+
+        .ai-message {
+            background-color: var(--ai-bubble);
+            padding: 15px;
+            border-radius: 12px;
+            border-bottom-left-radius: 2px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #2c3e50;
+            border: 1px solid #d6eaf8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            animation: slideIn 0.3s;
+        }
+
+        .ai-alert {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-suggestion-chip {
+            display: inline-block;
+            background: white;
+            border: 1px solid var(--colore-accento);
+            color: var(--colore-accento);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 5px 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-suggestion-chip:hover {
+            background: var(--colore-accento);
+            color: white;
+        }
+
+        .typing-indicator {
+            font-style: italic;
+            color: #888;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* Utility */
         .allerta-verde { border-color: var(--allerta-verde); color: var(--allerta-verde); }
         .allerta-gialla { border-color: var(--allerta-gialla); color: var(--allerta-gialla); }
         .allerta-arancione { border-color: var(--allerta-arancione); color: var(--allerta-arancione); }
         .allerta-rossa { border-color: var(--allerta-rossa); color: var(--allerta-rossa); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
     </style>
 </head>
 <body>
 
     <div id="menu-rischi">
         <div id="logo-container">
-            <img src="IMAGE_FILE_105840.png" alt="Logo Sala Operativa">
+            <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="white"/>
+                <path d="M50 20L80 70H20L50 20Z" fill="#e67e22"/>
+            </svg>
+            <h3 style="margin:10px 0 0 0; font-size:1rem;">Sala Operativa<br>Regione Basilicata</h3>
         </div>
-        <h2>Elenco Rischi</h2>
-        <button onclick="mostraScheda('criticita')" data-target="criticita">Gestione Bollettino Criticità</button>
-        <button onclick="mostraScheda('avviso_criticita')" data-target="avviso_criticita">Gestione Avviso Criticità</button>
-        <button onclick="mostraScheda('meteo_avverse')" data-target="meteo_avverse">Gestione Avviso Meteo Avverse</button>
-        <button onclick="mostraScheda('valanghe')" data-target="valanghe">Gestione Bollettino Valanghe</button>
-        <button onclick="mostraScheda('rischio_idraulico')" data-target="rischio_idraulico">Rischio Idraulico (Soglia)</button>
-        <button onclick="mostraScheda('rischio_idrogeologico')" data-target="rischio_idrogeologico">Rischio Idrogeologico (Soglia)</button>
-        <button onclick="mostraScheda('dighe')" data-target="dighe">Rischio Grandi Dighe</button>
-        <button onclick="mostraScheda('frana_maratea')" data-target="frana_maratea">Criticità Frana Maratea</button>
-        <button onclick="mostraScheda('sismico')" data-target="sismico">Rischio Sismico</button>
-        <button onclick="mostraScheda('incendi')" data-target="incendi">Rischio Incidente Rilevante</button>
-        <button onclick="mostraScheda('persone_scomparse')" data-target="persone_scomparse">Ricerca Persone Scomparse</button>
-        <button onclick="mostraScheda('maremoto')" data-target="maremoto">Rischio Maremoto</button>
+        
+        <h2>Procedure Attive</h2>
+        <button onclick="gestisciClick('criticita')" data-target="criticita">Bollettino Criticità</button>
+        <button onclick="gestisciClick('avviso_criticita')" data-target="avviso_criticita">Avviso Criticità</button>
+        <button onclick="gestisciClick('meteo_avverse')" data-target="meteo_avverse">Avviso Meteo Avverse</button>
+        <button onclick="gestisciClick('valanghe')" data-target="valanghe">Bollettino Valanghe</button>
+        <button onclick="gestisciClick('rischio_idraulico')" data-target="rischio_idraulico">Rischio Idraulico</button>
+        <button onclick="gestisciClick('rischio_idrogeologico')" data-target="rischio_idrogeologico">Rischio Idrogeologico</button>
+        <button onclick="gestisciClick('dighe')" data-target="dighe">Rischio Grandi Dighe</button>
+        <button onclick="gestisciClick('frana_maratea')" data-target="frana_maratea">Criticità Frana Maratea</button>
+        <button onclick="gestisciClick('sismico')" data-target="sismico">Rischio Sismico</button>
+        <button onclick="gestisciClick('incendi')" data-target="incendi">Incidente Rilevante</button>
+        <button onclick="gestisciClick('persone_scomparse')" data-target="persone_scomparse">Persone Scomparse</button>
+        <button onclick="gestisciClick('maremoto')" data-target="maremoto">Rischio Maremoto</button>
     </div>
 
     <div id="contenuto-procedura">
         
         <div id="placeholder" class="scheda active">
-            <h1>Benvenuto nella Sala Operativa</h1>
-            <p style="font-size: 20px;">Seleziona una procedura dal menu a sinistra per visualizzare le istruzioni operative.</p>
+            <h1>S.O.R. Basilicata - Home</h1>
+            <p style="font-size: 20px;">Seleziona una procedura dal menu a sinistra.</p>
+            <p>L'Assistente IA sulla destra ti fornirà supporto contestuale in tempo reale.</p>
         </div>
 
         <div id="criticita" class="scheda">
             <h1>Gestione Bollettino di Criticità Regionale</h1>
-            <p><strong>Ricezione:</strong> Ricevuto il <strong>Bollettino di Criticità Regionale</strong>, emesso dal C.F.D. Basilicata e trasmesso in S.O.R. a mezzo FOLIUM – INFOCERT e OUTLOOK.</p>
+            <p><strong>Ricezione:</strong> Ricevuto il <strong>Bollettino di Criticità Regionale</strong>, emesso dal C.F.D. Basilicata.</p>
             <h3>Inoltro ai destinatari</h3>
             <h4>Accesso al sito</h4>
             <ul>
-                <li>Accedere al sito <a href="https://protezionecivile.regione.basilicata.it" target="_blank">protezionecivile.regione.basilicata.it</a> ed inserire le credenziali.</li>
-                <li>Selezionare “atti e documenti” > “area riservata funzionari Protezione Civile”.</li>
-                <li>Nella sezione “Invio Mail Rischio Idrogeologico e Idraulico”, cliccare “<strong>Invia mail di notifica</strong>”, attendere la conferma e annotare l'orario sul report giornaliero.</li>
+                <li>Accedere al sito <a href="#">protezionecivile.regione.basilicata.it</a>.</li>
+                <li>Sezione “Invio Mail Rischio Idrogeologico”: cliccare “<strong>Invia mail di notifica</strong>”.</li>
             </ul>
-            <h4>Pubblicazione su TELEGRAM</h4>
+            <h4>Pubblicazione TELEGRAM / WHATSAPP</h4>
             <ul>
-                <li>Nel gruppo “<strong>Protezione Civile Basilicata</strong>”, incollare il testo standard "BOLLETTINO DI CRITICITA’ REGIONALE del..." dal file Word "Telegram".</li>
-                <li>Creare il link sul testo "&lt;&lt;&lt;clicca qui...&gt;&gt;&gt;" incollando l'URL del bollettino del giorno dal sito del C.F.D. Basilicata.</li>
-                <li>Inviare e inoltrare al gruppo “<strong>Volontariato – Protezione Civile Basilicata</strong>”.</li>
-            </ul>
-            <h4>Pubblicazione su WHATSAPP CANALI</h4>
-            <ul>
-                <li>Nel canale “<strong>PROTEZIONE CIVILE BASILICATA</strong>”, scrivere "BOLLETTINO DI CRITICITA’ REGIONALE del...", andare a capo (shift+invio) e incollare il link del bollettino.</li>
-            </ul>
-        </div>
-        
-        <div id="avviso_criticita" class="scheda">
-            <h1>Gestione Avviso di Criticità Regionale</h1>
-            <h3>Fase 1: Preparazione Documento</h3>
-            <ul>
-                <li>Protocollare l’Avviso di Criticità Regionale (da FOLIUM/INFOCERT/OUTLOOK).</li>
-                <li>Elaborare la copertina con i dati dell'avviso.</li>
-                <li>Combinare copertina e avviso in un PDF unico: <strong>ALLERTA PROTEZIONE CIVILE N. … del giorno – mese – anno</strong>.</li>
-            </ul>
-            <h3>Fase 2: Inoltro ai Destinatari</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>BASI INTERESSATE</strong> o <strong>BASI TUTTE – CRITICITA’</strong>.</li>
-                <li>Allegare e usare come oggetto il nome del file PDF.</li>
-                <li>Testo standard: "in allegato si trasmette quanto in oggetto...". Inviare.</li>
-            </ul>
-            <h4>TELEGRAM</h4>
-            <ul>
-                <li>Nel gruppo “<strong>Protezione Civile Basilicata</strong>”, incollare testo standard e allegare il PDF.</li>
-                <li>Inviare e inoltrare al gruppo “<strong>Volontariato – Protezione Civile Basilicata</strong>”.</li>
-            </ul>
-            <h4>VOISMART FAX</h4>
-            <ul>
-                <li>Destinatario: <strong>Prefettura Potenza</strong>, Nota: "ALLERTA PROTEZIONE CIVILE N. …", Priorità 5. Spedire.</li>
-            </ul>
-            <h4>WHATSAPP GRUPPI (BASI A1, A2, B, C, D, E1, E2)</h4>
-            <ul><li>Nel gruppo interessato, scrivere "ALLERTA PROTEZIONE CIVILE N. …", allegare il PDF e inviare.</li></ul>
-            <h4>WHATSAPP CANALI</h4>
-            <ul><li>Scrivere "ALLERTA PROTEZIONE CIVILE N. …", andare a capo (shift+invio) e incollare il link dell'avviso.</li></ul>
-            <h4>Contatto RADIO / TELEFONO (Solo per allerta ARANCIONE)</h4>
-            <ul><li>Contattare Sindaci/referenti dei Comuni interessati da un evento in atto.</li></ul>
-        </div>
-        
-        <div id="meteo_avverse" class="scheda">
-            <h1>Gestione Avviso Condizioni Meteorologiche Avverse</h1>
-            <h3>Fase 1: Preparazione Documento</h3>
-            <ul>
-                <li>Protocollare l’<strong>Avviso di Condizioni Meteorologiche Avverse</strong> emesso dal D.P.C. (ricevuto via OUTLOOK).</li>
-                <li>Elaborare la copertina con i dati dell'avviso.</li>
-                <li>Combinare copertina e avviso in un PDF unico: <strong>ALLERTA PROTEZIONE CIVILE N. … del giorno – mese – anno</strong>.</li>
-            </ul>
-            <h3>Fase 2: Inoltro ai Destinatari</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>BASI INTERESSATE</strong> o <strong>BASI TUTTE – CRITICITA’</strong>.</li>
-                <li>Allegare e usare come oggetto il nome del file PDF. Inviare.</li>
-            </ul>
-            <h4>VOISMART FAX</h4>
-            <ul>
-                <li>Destinatario: <strong>Prefettura Potenza</strong>, Nota: "ALLERTA PROTEZIONE CIVILE N. …", Priorità 5. Spedire.</li>
-            </ul>
-            <h4>WHATSAPP GRUPPI (BASI A1, A2, B, C, D, E1, E2)</h4>
-            <ul>
-                <li>Nel gruppo interessato, scrivere "ALLERTA PROTEZIONE CIVILE N. …", allegare il PDF e inviare.</li>
-            </ul>
-        </div>
-
-        <div id="valanghe" class="scheda">
-            <h1>Gestione Bollettino Valanghe</h1>
-            <p><strong>Ricezione:</strong> Ricevuto il <strong>Bollettino Valanghe</strong> (METEOMONT) trasmesso dal C.F.D. via OUTLOOK.</p>
-            <h3>Inoltro ai Destinatari</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>BOLLETTINO VALANGHE – CRITICITA’</strong>.</li>
-                <li>Allegare il file e usare come oggetto: "BOLLETTINO VALANGHE N. … del giorno – mese – anno ore 14:00". Inviare.</li>
-            </ul>
-            <h4>TELEGRAM</h4>
-            <ul>
-                <li>Nel gruppo “<strong>Protezione Civile Basilicata</strong>”, scrivere l'oggetto, allegare il file e inviare.</li>
-                <li>Inoltrare al gruppo “<strong>Volontariato – Protezione Civile Basilicata</strong>”.</li>
-            </ul>
-            <h4>WHATSAPP GRUPPI (BOLLETTINO VALANGHE)</h4>
-            <ul><li>Nel gruppo, scrivere l'oggetto, allegare il file e inviare.</li></ul>
-            <h4>WHATSAPP CANALI</h4>
-            <ul>
-                <li>Nel canale “<strong>PROTEZIONE CIVILE BASILICATA</strong>”, scrivere l'oggetto, andare a capo (shift+invio) e incollare il link: <a href="https://meteomont.carabinieri.it/archivio-meteo-valanghe" target="_blank">https://meteomont.carabinieri.it</a>.</li>
-            </ul>
-        </div>
-        
-        <div id="rischio_idraulico" class="scheda">
-            <h1>Gestione Avviso Superamento Soglia Rischio Idraulico</h1>
-            <p><strong>Ricezione:</strong> Ricevuto l’<strong>Avviso Superamento Soglia per Rischio Idraulico</strong> dal C.F.D. (via FOLIUM/INFOCERT/OUTLOOK).</p>
-            <h3>Inoltro ai Destinatari</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>GRUPPO IDRO</strong> (indicato nell'avviso) e <strong>PREFETTURE MT e/o PZ</strong>.</li>
-                <li>Allegare l'avviso. Oggetto: "AVVISO SUPERAMENTO SOGLIA RISCHIO IDRAULICO - [DATA] - STAZIONE [NOME] - LIVELLO [METRI]".</li>
-            </ul>
-            <h4>VOISMART FAX (Solo per comuni provincia di Potenza)</h4>
-            <ul><li>Destinatario: <strong>Prefettura Potenza</strong>. Nota: inserire lo stesso oggetto della PEC.</li></ul>
-            <h4>WHATSAPP GRUPPI</h4>
-            <ul><li>Contattare i <strong>Sindaci</strong> dei comuni interessati (indicati nell'avviso), inviando il testo dell'oggetto e allegando il file.</li></ul>
-            <h4>Contatto RADIO / TELEFONO</h4>
-            <ul>
-                <li>Contattare <strong>Sindaci/referenti</strong> dei Comuni ed Enti interessati (ANAS, PROVINCIA, VVF, FS) e <strong>Prefetture</strong>.</li>
-                <li class="contatto">Per idro <strong>TORRE ACCIO</strong> (chiusura strada): Ing. MORISCO <strong>3470717183</strong>, Sig. MONTANARO <strong>3339222901</strong>.</li>
-            </ul>
-        </div>
-
-        <div id="rischio_idrogeologico" class="scheda">
-            <h1>Gestione Avviso Superamento Soglia Rischio Idrogeologico</h1>
-            <p><strong>Ricezione:</strong> Ricevuto l’<strong>Avviso Superamento Soglia per Rischio Idrogeologico</strong> dal C.F.D. (via FOLIUM/INFOCERT/OUTLOOK).</p>
-            <h3>Inoltro ai Destinatari</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>GRUPPO PLUVIO</strong> (indicato nell'avviso) e <strong>PREFETTURE MT e/o PZ</strong>.</li>
-                <li>Allegare l'avviso. Oggetto: "AVVISO SUPERAMENTO SOGLIA RISCHIO IDROGEOLOGICO - [DATA] - PLUVIOMETRO [NOME] - ALLERTA [COLORE]".</li>
-            </ul>
-            <h4>VOISMART FAX (Solo per comuni provincia di Potenza)</h4>
-            <ul><li>Destinatario: <strong>Prefettura Potenza</strong>. Nota: inserire lo stesso oggetto della PEC.</li></ul>
-            <h4>WHATSAPP GRUPPI</h4>
-            <ul><li>Contattare i <strong>Sindaci</strong> dei comuni interessati (indicati nell'avviso), inviando il testo dell'oggetto e allegando il file.</li></ul>
-            <h4>Contatto RADIO / TELEFONO</h4>
-            <ul><li>Contattare <strong>Sindaci/referenti</strong> dei Comuni interessati e <strong>Prefetture MT e/o PZ</strong>.</li></ul>
-        </div>
-
-        <div id="dighe" class="scheda">
-            <h1>Gestione Avviso Rischio Grandi Dighe</h1>
-            <h3>Fase 1: Preparazione Documento</h3>
-            <ul>
-                <li>Protocollare l’<strong>Avviso Rischio Grandi Dighe</strong>.</li>
-                <li>Elaborare la copertina e combinarla con l'avviso in un PDF unico: <strong>ALLERTA PROTEZIONE CIVILE N. …</strong>.</li>
-            </ul>
-            <h3>Fase 2: Inoltro ai Destinatari</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>GRUPPO DIGA</strong> (indicato nell'avviso).</li>
-                <li>Allegare il PDF. Oggetto: "ALLERTA PROTEZIONE CIVILE - [DATA] - DIGA [NOME] - RISCHIO [TIPO] - FASE [FASE] - ALLERTA [COLORE]".</li>
-            </ul>
-            <h4>VOISMART FAX (Solo per comuni provincia di Potenza)</h4>
-            <ul><li>Destinatario: <strong>Prefettura Potenza</strong>. Nota: inserire lo stesso oggetto della PEC.</li></ul>
-            <h4>WHATSAPP GRUPPI</h4>
-            <ul><li>Contattare i <strong>Sindaci</strong> dei comuni interessati, inviando il testo dell'oggetto e allegando il file.</li></ul>
-            <h4>Contatto RADIO / TELEFONO</h4>
-            <ul><li>Contattare <strong>Sindaci/referenti</strong> dei Comuni ed Enti interessati (ANAS, PROVINCIA, VVF, FS) e <strong>Prefetture</strong>.</li></ul>
-        </div>
-        
-        <div id="frana_maratea" class="scheda">
-            <h1>Gestione Criticità Frana Maratea</h1>
-            <h3>Condizioni di Attivazione</h3>
-            <p>La procedura si attiva quando viene emesso per la <strong>Zona di Allerta “BASI D”</strong> uno dei seguenti avvisi:</p>
-            <ul>
-                <li>Avviso Criticità Idrogeologica <strong style="color:var(--allerta-arancione)">ARANCIONE</strong> o <strong style="color:var(--allerta-rossa)">ROSSA</strong>.</li>
-                <li>Avviso Superamento Soglia pluviometri CASTROCUCCO/MARATEA con criticità <strong style="color:var(--allerta-gialla)">GIALLA</strong>, <strong style="color:var(--allerta-arancione)">ARANCIONE</strong> o <strong style="color:var(--allerta-rossa)">ROSSA</strong>.</li>
-                <li>Avviso di Condizioni Meteorologiche Avverse del D.P.C.</li>
-            </ul>
-            <h3>Procedura di Comunicazione</h3>
-            <h4>PEC (INFOCERT)</h4>
-            <ul>
-                <li>Destinatari: <strong>CRITICITA’ FRANA MARATEA</strong>.</li>
-                <li>Allegare l'avviso ricevuto. Oggetto: "AVVISO [TIPO] - [DATA] - ZONA ALLERTA BASI D - CRITICITA’ [LIVELLO E COLORE]".</li>
-                <li>Testo: "Per doverosa conoscenza e per le conseguenti valutazioni di cui al Protocollo di gestione dell’emergenza...".</li>
-            </ul>
-            <h4>WHATSAPP GRUPPI (CRITICITA’ FRANA MARATEA)</h4>
-            <ul><li>Inviare lo stesso testo della PEC, allegando il file.</li></ul>
-            <h4>Contatti Telefonici Obbligatori</h4>
-            <ul>
-                <li class="contatto">Avv. ALBANESE Cesare (Commissario): <strong>339 2011917</strong> – <strong>0973 874231</strong></li>
-                <li class="contatto">Dott. FIORENZANO Francesco (Com.te VV.UU.): <strong>333 6386897</strong> – <strong>0973 877982</strong></li>
-                <li class="contatto">Geom. ROCCO Giuseppe (Resp. Sala Op. ANAS): <strong>349 4399018</strong></li>
-            </ul>
-            <h4>Contatti in caso di mancata risposta</h4>
-            <ul>
-                <li class="contatto">CC Maratea: <strong>0973 872685</strong></li>
-                <li class="contatto">Ing. PULLANO (ANAS): <strong>335 7460017</strong></li>
-                <li class="contatto">Guardia Costiera Maratea: <strong>0973 876859</strong></li>
+                <li>Gruppo “Protezione Civile Basilicata”: incollare testo standard.</li>
+                <li>Canali Whatsapp: Incollare link bollettino.</li>
             </ul>
         </div>
 
@@ -382,87 +291,158 @@
             <h1>Gestione Rischio Sismico</h1>
             <h3>Fase 1: Monitoraggio</h3>
             <ul>
-                <li>Consultare continuamente il sito INGV Terremoti: <a href="http://terremoti.ingv.it" target="_blank">terremoti.ingv.it</a>.</li>
-                <li>Attendere modulistica dal C.F.D. Basilicata (ore 8-11-14-17-19:45).</li>
+                <li>Consultare INGV Terremoti: <a href="http://terremoti.ingv.it" target="_blank">terremoti.ingv.it</a>.</li>
             </ul>
-            <h3>Fase 2: Attivazione (Terremoto ML >= 3)</h3>
-            <p>Se si registra un evento sismico con <strong>magnitudo 3 o superiore</strong> in Basilicata o in regioni confinanti con interessamento di comuni lucani (raggio 20 km):</p>
+            <h3>Fase 2: Attivazione (ML >= 3)</h3>
             <ul>
-                <li><strong>Contattare telefonicamente TUTTI i comuni</strong> nel raggio di 20 km dall'epicentro.</li>
-                <li>Acquisire segnalazioni di danni/criticità e verificare l'attivazione del Piano Comunale di Protezione Civile.</li>
-                <li>Se necessario, e previa attivazione dell'Ufficio, inviare <strong>Associazioni di Volontariato</strong> convenzionate per assistenza alla popolazione.</li>
+                <li><strong>Contattare telefonicamente TUTTI i comuni</strong> (raggio 20 km).</li>
+                <li>Acquisire segnalazioni danni.</li>
             </ul>
         </div>
-
-        <div id="incendi" class="scheda">
-            <h1>Gestione Rischio Incidente Rilevante</h1>
-            <p>La Basilicata ha 10 stabilimenti a rischio. I Piani di Emergenza Esterna (PEE) sono sui siti delle Prefetture di Potenza e Matera.</p>
-            <h3 class="allerta-verde">Allerta VERDE (Criticità Assente)</h3>
-            <ul><li><strong>Attività di Monitoraggio:</strong> Verificare l'eventuale ricezione di segnalazioni dal Gestore Aziendale, Prefettura o altri enti.</li></ul>
-            <h3 class="allerta-gialla">Allerta GIALLA (Criticità Ordinaria)</h3>
-            <p>Evento senza ripercussioni esterne, ma che potrebbe allarmare la popolazione.</p>
-            <ul>
-                <li>Ricevere comunicazione dell'evento dal gestore aziendale.</li>
-                <li>Attuare quanto previsto nei <strong>PEE (Piani di Emergenza Esterna)</strong>.</li>
-                <li>Su richiesta del CCS (Centro Coordinamento Soccorsi), attivare i <strong>volontari</strong> per assistenza alla popolazione.</li>
-            </ul>
-        </div>
-
-        <div id="persone_scomparse" class="scheda">
-            <h1>Gestione Ricerca Persone Scomparse</h1>
-            <h3 class="allerta-verde">Allerta VERDE (Criticità Assente)</h3>
-            <ul><li><strong>Attività di Monitoraggio:</strong> Verificare l'eventuale ricezione di segnalazioni.</li></ul>
-            <h3 class="allerta-gialla">Allerta GIALLA (Criticità Ordinaria)</h3>
-            <p>In caso di segnalazione (da Cittadini, Enti, Forze di Polizia):</p>
-            <ul>
-                <li><strong>Informare immediatamente la Prefettura</strong> e attendere PEC ufficiale di "Attivazione Piano Ricerca Persone Scomparse".</li>
-                <li>Attuare i Piani Provinciali vigenti.</li>
-                <li>Seguire l'evoluzione e <strong>preallertare</strong> il funzionario da inviare all'UCL/PCA.</li>
-                <li><strong>Preallertare le organizzazioni di Volontariato</strong> che potrebbero essere impiegate.</li>
-            </ul>
-            <h3 class="allerta-rossa">Allerta ROSSA (Criticità Elevata)</h3>
-            <p>In caso di Attivazione ufficiale del Piano da parte della Prefettura via PEC:</p>
-            <ul>
-                <li>Inviare il funzionario reperibile presso l'UCL (Unità di Crisi Locale).</li>
-                <li>Attivare le Organizzazioni di Volontariato.</li>
-                <li>Mettere a disposizione dell'UCL mezzi e strumenti necessari.</li>
-                <li>Aprire e aggiornare l'evento sulla piattaforma <strong>SIGER</strong> fino a comunicazione di chiusura.</li>
-            </ul>
-        </div>
-
-        <div id="maremoto" class="scheda">
-            <h1>Gestione Rischio Maremoto</h1>
-            <p><strong>Ricezione:</strong> Ricevuto via mail il messaggio di <strong>allerta SIAM</strong>.</p>
-            <h3>Fase 1: Contatto Comuni</h3>
-            <ul>
-                <li>Contattare immediatamente i comuni costieri della Basilicata.</li>
-                <li><strong>Fascia Jonica:</strong> Nova Siri, Rotondella, Scanzano Jonico, Policoro, Pisticci, Bernalda.</li>
-                <li><strong>Fascia Tirrenica:</strong> Maratea.</li>
-                <li>Accertarsi che abbiano ricevuto il messaggio e attivato le procedure. (Mappe di allertamento su: <a href="http://sgi2.isprambiente.it/tsunamimap/" target="_blank">sito ISPRA</a>)</li>
-            </ul>
-            <h3>Descrizione Livelli di Allerta</h3>
-            <h4 class="allerta-rossa">Livello ROSSO (Watch)</h4>
-            <p>Onda superiore a 0.5m in mare aperto e/o run-up > 1m. Messaggio ricevuto da POC, Dirigente, Sala Operativa e Operatori.</p>
-            <h4 class="allerta-arancione">Livello ARANCIONE (Advisory)</h4>
-            <p>Onda inferiore a 0.5m in mare aperto e/o run-up < 1m. Messaggio ricevuto da POC, Dirigente, Sala Operativa e Operatori.</p>
-            <h4 class="allerta-gialla">Messaggio di INFORMAZIONE (Information)</h4>
-            <p>Impatto improbabile, ma possibili anomalie locali (correnti, onde) entro 100km dall'epicentro. Messaggio ricevuto da POC, Dirigente e Sala Operativa.</p>
+        
+        <div id="frana_maratea" class="scheda">
+             <h1>Gestione Criticità Frana Maratea</h1>
+             <h3>Contatti Prioritari</h3>
+             <ul>
+                 <li class="contatto">Commissario: 339 2011917</li>
+                 <li class="contatto">VV.UU. Maratea: 0973 877982</li>
+             </ul>
         </div>
 
     </div>
 
+    <div id="ai-assistant">
+        <div id="ai-header">
+            <div id="ai-icon">AI</div>
+            <div>
+                <div style="font-weight: bold;">Supporto Operativo</div>
+                <div style="font-size: 0.8rem; opacity: 0.9;">Sempre attivo</div>
+            </div>
+        </div>
+        
+        <div id="ai-body">
+            <div class="ai-message">
+                Ciao! Sono il tuo assistente virtuale per la Sala Operativa.
+                <br><br>
+                Seleziona una procedura e ti aiuterò a controllare i passaggi critici e a recuperare i numeri giusti.
+            </div>
+            <div id="typing-indicator" class="typing-indicator">L'assistente sta analizzando la procedura...</div>
+            <div id="dynamic-ai-content"></div>
+        </div>
+    </div>
+
     <script>
+        // DATABASE CONOSCENZA AI (Simulato)
+        // Qui definiamo cosa dice l'IA per ogni scenario
+        const aiKnowledgeBase = {
+            'placeholder': {
+                text: "Attendo istruzioni. Seleziona un rischio dal menu.",
+                actions: []
+            },
+            'criticita': {
+                text: "<strong>Nota Operativa:</strong> Ricorda che il bollettino deve essere inviato <em>prima</em> delle 14:00 per essere valido per il giorno successivo. Hai controllato se la PEC di ricezione è arrivata correttamente?",
+                alert: "Verifica che il link nel messaggio Telegram sia cliccabile prima di inviare.",
+                actions: ["Apri Webmail", "Apri Telegram Web", "Chiama C.F.D."]
+            },
+            'sismico': {
+                text: "In caso di evento sismico, la velocità è tutto. <br>1. Verifica Magnitudo su INGV.<br>2. Se > 3.0 prepara il foglio presenze per le chiamate.",
+                alert: "Attenzione: Non fidarti dei social media per la localizzazione. Usa solo dati INGV.",
+                actions: ["Apri INGV", "Lista Comuni Raggio 20km"]
+            },
+            'frana_maratea': {
+                text: "Per Maratea la situazione è delicata. Se i sensori pluviometrici superano la soglia, la chiamata al Commissario è prioritaria rispetto alla PEC.",
+                alert: "Se il Commissario non risponde entro 5 min, chiama i Carabinieri di Maratea.",
+                actions: ["Chiama Commissario", "Verifica Pluviometri"]
+            },
+            'rischio_idraulico': {
+                text: "Hai ricevuto l'avviso di superamento soglia? Verifica subito quale fiume è interessato. Spesso il Sinni e l'Agri hanno tempi di corrivazione diversi.",
+                alert: "Se è notte, privilegia la chiamata telefonica ai Sindaci rispetto a WhatsApp.",
+                actions: ["Visualizza Idrometri", "Rubrica Sindaci"]
+            },
+            'incendi': {
+                text: "Per rischio industriale (RIR), verifica subito la direzione del vento sul sito dell'Aeronautica per capire dove si sposterà la nube.",
+                actions: ["Meteo AM", "Piano Emergenza Esterna"]
+            }
+            // Aggiungere qui altri casi o un default
+        };
+
+        function gestisciClick(idScheda) {
+            // 1. Gestione UI classica (Mostra/Nascondi schede)
+            mostraScheda(idScheda);
+            
+            // 2. Attivazione AI
+            aggiornaAI(idScheda);
+        }
+
         function mostraScheda(idScheda) {
             document.querySelectorAll('.scheda').forEach(scheda => scheda.classList.remove('active'));
+            // Fallback se l'ID non esiste nel codice HTML di esempio
             const schedaDaMostrare = document.getElementById(idScheda);
             if (schedaDaMostrare) {
                 schedaDaMostrare.classList.add('active');
+            } else {
+                // Se manca il div, ne mostro uno generico o rimango sul precedente
+                console.log("Scheda non trovata nell'HTML: " + idScheda);
             }
+            
             document.querySelectorAll('#menu-rischi button').forEach(bottone => {
                 bottone.classList.toggle('active', bottone.getAttribute('data-target') === idScheda);
             });
         }
-        document.addEventListener('DOMContentLoaded', () => mostraScheda('placeholder'));
+
+        function aggiornaAI(contextId) {
+            const container = document.getElementById('dynamic-ai-content');
+            const typing = document.getElementById('typing-indicator');
+            
+            // Pulisce il contenuto precedente
+            container.innerHTML = '';
+            typing.style.display = 'block';
+
+            // Simula un tempo di "pensiero" dell'AI (600ms)
+            setTimeout(() => {
+                typing.style.display = 'none';
+                
+                // Recupera i dati dalla Knowledge Base
+                const data = aiKnowledgeBase[contextId] || {
+                    text: "Sto monitorando la procedura. Segui attentamente i passaggi a video.",
+                    actions: ["Contatta Referente", "Logga Evento"]
+                };
+
+                // Costruisce l'HTML della risposta AI
+                let htmlContent = '';
+
+                // 1. Alert Box (se presente)
+                if(data.alert) {
+                    htmlContent += `
+                        <div class="ai-alert">
+                            <span style="font-size:1.2rem">⚠️</span>
+                            <div>${data.alert}</div>
+                        </div>
+                    `;
+                }
+
+                // 2. Messaggio principale
+                htmlContent += `<div class="ai-message">${data.text}</div>`;
+
+                // 3. Chip azioni suggerite
+                if(data.actions && data.actions.length > 0) {
+                    htmlContent += `<div style="margin-top:10px; font-size:0.8rem; color:#666; margin-bottom:5px;">AZIONI SUGGERITE:</div>`;
+                    data.actions.forEach(action => {
+                        htmlContent += `<span class="ai-suggestion-chip" onclick="alert('Simulazione azione: ${action}')">${action}</span>`;
+                    });
+                }
+
+                container.innerHTML = htmlContent;
+                
+                // Scrolla l'AI in fondo se c'è molto testo
+                const aiBody = document.getElementById('ai-body');
+                aiBody.scrollTop = aiBody.scrollHeight;
+
+            }, 600);
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => gestisciClick('placeholder'));
     </script>
 
 </body>
