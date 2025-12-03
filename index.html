@@ -3,447 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.O.R. Basilicata - AI Assisted</title>
+    <title>SOR Basilicata - Event Driven</title>
     <style>
         :root {
-            --colore-primario: #2c3e50;
-            --colore-secondario: #34495e;
-            --colore-accento: #3498db;
-            --colore-sfondo: #f0f2f5;
-            --colore-testo: #333;
-            --ai-bg: #ffffff;
-            --ai-bubble: #e8f4fd;
-            --allerta-verde: #27ae60;
-            --allerta-gialla: #f1c40f;
-            --allerta-arancione: #e67e22;
-            --allerta-rossa: #c0392b;
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --accent-hover: #2980b9;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --success: #27ae60;
+            --text: #333;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; display: flex; background-color: var(--bg); color: var(--text); }
+
+        /* --- LAYOUT --- */
+        #main-container {
             display: flex;
-            height: 100vh;
-            background-color: var(--colore-sfondo);
-            overflow: hidden; /* Evita scroll bar sul body */
+            width: 100%;
+            height: 100%;
         }
 
-        /* --- COLONNA 1: MENU --- */
-        #menu-rischi {
-            width: 300px;
-            min-width: 300px;
-            background-color: var(--colore-primario);
+        /* --- SINISTRA: DASHBOARD E STORICO --- */
+        #sidebar {
+            width: 280px;
+            background: var(--primary);
             color: white;
             padding: 20px;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            z-index: 10;
         }
 
-        #logo-container {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            width: 100%;
-            text-align: center;
-        }
+        .logo-area { text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .logo-area h2 { margin: 0; font-size: 1.2rem; }
+        .logo-area span { font-size: 0.8rem; opacity: 0.7; }
 
-        #logo-container img {
-            max-width: 120px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border-radius: 50%; /* Tocco estetico se non c'è logo */
-            background: #fff;
-            padding: 10px;
-        }
-
-        #menu-rischi h2 {
-            font-size: 1.2rem;
-            text-align: center;
-            border-bottom: 2px solid var(--colore-accento);
-            padding-bottom: 10px;
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        #menu-rischi button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 8px;
-            background-color: var(--colore-secondario);
+        .btn-new-event {
+            background-color: var(--danger);
             color: white;
             border: none;
-            border-left: 4px solid transparent;
-            border-radius: 4px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            text-align: left;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-
-        #menu-rischi button:hover {
-            background-color: #4e6a85;
-            padding-left: 18px;
-        }
-
-        #menu-rischi button.active {
-            background-color: #3e5871;
-            border-left: 4px solid var(--colore-accento);
-            font-weight: bold;
-        }
-
-        /* --- COLONNA 2: PROCEDURA (CENTRALE) --- */
-        #contenuto-procedura {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-            background: white;
-            border-right: 1px solid #ddd;
-        }
-
-        .scheda {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out;
-            max-width: 900px; /* Per non avere righe troppo lunghe */
-            margin: 0 auto;
-        }
-
-        .scheda.active { display: block; }
-
-        .scheda h1 { color: var(--colore-primario); border-bottom: 2px solid #eee; padding-bottom: 15px; font-size: 2rem;}
-        .scheda h3 { color: var(--colore-accento); margin-top: 30px; font-size: 1.4rem; }
-        .scheda h4 { color: var(--colore-primario); margin-top: 20px; font-weight: 700; }
-        .scheda p, .scheda li { font-size: 1.1rem; line-height: 1.6; color: #444; }
-        
-        .scheda ul { list-style-type: none; padding-left: 20px; }
-        .scheda ul li::before { content: "✓"; color: var(--colore-accento); font-weight: bold; display: inline-block; width: 1.2em; margin-left: -1.2em; }
-        .scheda li { margin-bottom: 10px; }
-        
-        .contatto {
-            background-color: #f8f9fa;
-            border-left: 4px solid var(--colore-secondario);
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 0 4px 4px 0;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-        }
-
-        /* --- COLONNA 3: AI ASSISTANT (DESTRA) --- */
-        #ai-assistant {
-            width: 350px;
-            min-width: 350px;
-            background-color: var(--ai-bg);
-            border-left: 1px solid #ccc;
-            display: flex;
-            flex-direction: column;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-        }
-
-        #ai-header {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        #ai-icon {
-            font-size: 24px;
-            background: white;
-            color: var(--colore-accento);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-        }
-
-        #ai-body {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background-color: #fcfcfc;
-        }
-
-        .ai-message {
-            background-color: var(--ai-bubble);
-            padding: 15px;
-            border-radius: 12px;
-            border-bottom-left-radius: 2px;
-            margin-bottom: 15px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #2c3e50;
-            border: 1px solid #d6eaf8;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            animation: slideIn 0.3s;
-        }
-
-        .ai-alert {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeeba;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
             gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .btn-new-event:active { transform: scale(0.98); }
+
+        #active-events-list { margin-top: 30px; flex-grow: 1; }
+        .event-card {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-left: 3px solid var(--warning);
+        }
+        .event-card.completed { border-left-color: var(--success); opacity: 0.6; }
+
+        /* --- CENTRO: AREA OPERATIVA --- */
+        #workspace {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .ai-suggestion-chip {
-            display: inline-block;
+        /* Schermata iniziale (Vuota) */
+        #empty-state {
+            text-align: center;
+            margin-top: 100px;
+            color: #999;
+        }
+
+        /* Wizard Scelta Evento */
+        #event-wizard {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .wizard-step { display: none; animation: fadeIn 0.3s; }
+        .wizard-step.active { display: block; }
+
+        .grid-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 20px; }
+        
+        .type-btn {
             background: white;
-            border: 1px solid var(--colore-accento);
-            color: var(--colore-accento);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            margin: 5px 2px;
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
             cursor: pointer;
+            font-weight: 600;
             transition: all 0.2s;
         }
+        .type-btn:hover { border-color: var(--accent); color: var(--accent); background: #f0f8ff; }
+        
+        /* Checklist Operativa */
+        #checklist-container { display: none; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        .task-item:hover { background: #fafafa; }
+        
+        .task-checkbox { transform: scale(1.5); margin-right: 15px; cursor: pointer; }
+        .task-content { flex-grow: 1; }
+        .task-title { font-weight: 600; font-size: 1.1rem; }
+        .task-desc { font-size: 0.9rem; color: #666; margin-top: 4px; }
+        
+        .task-meta { font-size: 0.8rem; color: #999; margin-left: 10px; }
 
-        .ai-suggestion-chip:hover {
-            background: var(--colore-accento);
-            color: white;
+        /* --- DESTRA: AI COPILOT --- */
+        #ai-sidebar {
+            width: 320px;
+            background: white;
+            border-left: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
         }
 
-        .typing-indicator {
-            font-style: italic;
-            color: #888;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-            display: none;
-        }
-
-        /* Utility */
-        .allerta-verde { border-color: var(--allerta-verde); color: var(--allerta-verde); }
-        .allerta-gialla { border-color: var(--allerta-gialla); color: var(--allerta-gialla); }
-        .allerta-arancione { border-color: var(--allerta-arancione); color: var(--allerta-arancione); }
-        .allerta-rossa { border-color: var(--allerta-rossa); color: var(--allerta-rossa); }
+        #ai-header { padding: 20px; background: var(--accent); color: white; display: flex; align-items: center; gap: 10px; }
+        #ai-chat { flex-grow: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; }
+        
+        .msg { margin-bottom: 15px; padding: 12px; border-radius: 8px; font-size: 0.95rem; line-height: 1.4; max-width: 90%; }
+        .msg.ai { background: #e3f2fd; color: #2c3e50; border-bottom-left-radius: 0; align-self: flex-start; }
+        .msg.user { background: #2c3e50; color: white; border-bottom-right-radius: 0; align-self: flex-end; margin-left: auto; }
+        
+        .ai-status { font-size: 0.75rem; color: #666; padding: 10px; border-top: 1px solid #eee; background: #fff; text-align: center; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
+        /* Utility buttons for wizard */
+        .btn-confirm { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 4px; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="menu-rischi">
-        <div id="logo-container">
-            <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="45" fill="white"/>
-                <path d="M50 20L80 70H20L50 20Z" fill="#e67e22"/>
-            </svg>
-            <h3 style="margin:10px 0 0 0; font-size:1rem;">Sala Operativa<br>Regione Basilicata</h3>
-        </div>
-        
-        <h2>Procedure Attive</h2>
-        <button onclick="gestisciClick('criticita')" data-target="criticita">Bollettino Criticità</button>
-        <button onclick="gestisciClick('avviso_criticita')" data-target="avviso_criticita">Avviso Criticità</button>
-        <button onclick="gestisciClick('meteo_avverse')" data-target="meteo_avverse">Avviso Meteo Avverse</button>
-        <button onclick="gestisciClick('valanghe')" data-target="valanghe">Bollettino Valanghe</button>
-        <button onclick="gestisciClick('rischio_idraulico')" data-target="rischio_idraulico">Rischio Idraulico</button>
-        <button onclick="gestisciClick('rischio_idrogeologico')" data-target="rischio_idrogeologico">Rischio Idrogeologico</button>
-        <button onclick="gestisciClick('dighe')" data-target="dighe">Rischio Grandi Dighe</button>
-        <button onclick="gestisciClick('frana_maratea')" data-target="frana_maratea">Criticità Frana Maratea</button>
-        <button onclick="gestisciClick('sismico')" data-target="sismico">Rischio Sismico</button>
-        <button onclick="gestisciClick('incendi')" data-target="incendi">Incidente Rilevante</button>
-        <button onclick="gestisciClick('persone_scomparse')" data-target="persone_scomparse">Persone Scomparse</button>
-        <button onclick="gestisciClick('maremoto')" data-target="maremoto">Rischio Maremoto</button>
-    </div>
-
-    <div id="contenuto-procedura">
-        
-        <div id="placeholder" class="scheda active">
-            <h1>S.O.R. Basilicata - Home</h1>
-            <p style="font-size: 20px;">Seleziona una procedura dal menu a sinistra.</p>
-            <p>L'Assistente IA sulla destra ti fornirà supporto contestuale in tempo reale.</p>
-        </div>
-
-        <div id="criticita" class="scheda">
-            <h1>Gestione Bollettino di Criticità Regionale</h1>
-            <p><strong>Ricezione:</strong> Ricevuto il <strong>Bollettino di Criticità Regionale</strong>, emesso dal C.F.D. Basilicata.</p>
-            <h3>Inoltro ai destinatari</h3>
-            <h4>Accesso al sito</h4>
-            <ul>
-                <li>Accedere al sito <a href="#">protezionecivile.regione.basilicata.it</a>.</li>
-                <li>Sezione “Invio Mail Rischio Idrogeologico”: cliccare “<strong>Invia mail di notifica</strong>”.</li>
-            </ul>
-            <h4>Pubblicazione TELEGRAM / WHATSAPP</h4>
-            <ul>
-                <li>Gruppo “Protezione Civile Basilicata”: incollare testo standard.</li>
-                <li>Canali Whatsapp: Incollare link bollettino.</li>
-            </ul>
-        </div>
-
-        <div id="sismico" class="scheda">
-            <h1>Gestione Rischio Sismico</h1>
-            <h3>Fase 1: Monitoraggio</h3>
-            <ul>
-                <li>Consultare INGV Terremoti: <a href="http://terremoti.ingv.it" target="_blank">terremoti.ingv.it</a>.</li>
-            </ul>
-            <h3>Fase 2: Attivazione (ML >= 3)</h3>
-            <ul>
-                <li><strong>Contattare telefonicamente TUTTI i comuni</strong> (raggio 20 km).</li>
-                <li>Acquisire segnalazioni danni.</li>
-            </ul>
-        </div>
-        
-        <div id="frana_maratea" class="scheda">
-             <h1>Gestione Criticità Frana Maratea</h1>
-             <h3>Contatti Prioritari</h3>
-             <ul>
-                 <li class="contatto">Commissario: 339 2011917</li>
-                 <li class="contatto">VV.UU. Maratea: 0973 877982</li>
-             </ul>
-        </div>
-
-    </div>
-
-    <div id="ai-assistant">
-        <div id="ai-header">
-            <div id="ai-icon">AI</div>
-            <div>
-                <div style="font-weight: bold;">Supporto Operativo</div>
-                <div style="font-size: 0.8rem; opacity: 0.9;">Sempre attivo</div>
+    <div id="main-container">
+        <div id="sidebar">
+            <div class="logo-area">
+                <h2>S.O.R. BASILICATA</h2>
+                <span>Sistema Supporto decisionale</span>
             </div>
+            <button class="btn-new-event" onclick="startNewEvent()">
+                <span>+</span> NUOVO EVENTO
+            </button>
+            <div id="active-events-list">
+                <h4 style="border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px;">Eventi in corso</h4>
+                </div>
         </div>
-        
-        <div id="ai-body">
-            <div class="ai-message">
-                Ciao! Sono il tuo assistente virtuale per la Sala Operativa.
-                <br><br>
-                Seleziona una procedura e ti aiuterò a controllare i passaggi critici e a recuperare i numeri giusti.
+
+        <div id="workspace">
+            
+            <div id="empty-state">
+                <h1>Sala Operativa pronta.</h1>
+                <p>Nessun evento attivo selezionato. Clicca su "Nuovo Evento" per iniziare il triage.</p>
             </div>
-            <div id="typing-indicator" class="typing-indicator">L'assistente sta analizzando la procedura...</div>
-            <div id="dynamic-ai-content"></div>
+
+            <div id="event-wizard">
+                
+                <div id="step-1" class="wizard-step active">
+                    <h2>Cosa sta succedendo?</h2>
+                    <p>Seleziona la macro-categoria dell'evento per avviare il protocollo.</p>
+                    <div class="grid-buttons">
+                        <div class="type-btn" onclick="selectCategory('SISMICO')">☢️ Rischio Sismico</div>
+                        <div class="type-btn" onclick="selectCategory('IDRO')">💧 Rischio Idraulico / Meteo</div>
+                        <div class="type-btn" onclick="selectCategory('DIGHE')">🚧 Rischio Dighe</div>
+                        <div class="type-btn" onclick="selectCategory('INCENDI')">🔥 Incendi / AIB</div>
+                        <div class="type-btn" onclick="selectCategory('RICERCA')">🔍 Ricerca Persone</div>
+                    </div>
+                </div>
+
+                <div id="step-2" class="wizard-step">
+                    <h2 id="step-2-title">Dettaglio Evento</h2>
+                    <div id="step-2-content"></div>
+                    </div>
+
+            </div>
+
+            <div id="checklist-container">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:15px; margin-bottom:20px;">
+                    <h2 id="procedure-title" style="margin:0; color:var(--primary);">Titolo Procedura</h2>
+                    <span id="procedure-code" style="background:#eee; padding:5px 10px; border-radius:4px; font-family:monospace;">CODE-001</span>
+                </div>
+                <div id="tasks-list">
+                    </div>
+            </div>
+
+        </div>
+
+        <div id="ai-sidebar">
+            <div id="ai-header">
+                <div style="font-weight:bold; font-size:1.1rem;">AI Supervisor</div>
+            </div>
+            <div id="ai-chat">
+                <div class="msg ai">
+                    Ciao. Sono in ascolto. <br>
+                    Quando segnali un nuovo evento, ti aiuterò a selezionare la procedura corretta e monitorerò i tempi di esecuzione.
+                </div>
+            </div>
+            <div class="ai-status">
+                Stato: 🟢 Monitoraggio attivo
+            </div>
         </div>
     </div>
 
     <script>
-        // DATABASE CONOSCENZA AI (Simulato)
-        // Qui definiamo cosa dice l'IA per ogni scenario
-        const aiKnowledgeBase = {
-            'placeholder': {
-                text: "Attendo istruzioni. Seleziona un rischio dal menu.",
-                actions: []
+        // --- DATABASE PROCEDURE (LOGICA) ---
+        // Qui definiamo l'albero decisionale
+        const protocols = {
+            'SISMICO': {
+                questions: [
+                    { label: "Magnitudo < 3.0", value: "low", risk: "Monitoraggio" },
+                    { label: "Magnitudo >= 3.0", value: "high", risk: "ALLERTA" }
+                ],
+                procedures: {
+                    'low': {
+                        title: "Evento Sismico Minore (ML < 3.0)",
+                        code: "SIS-01",
+                        tasks: [
+                            { title: "Verifica INGV", desc: "Controlla i dati definitivi sul sito INGV." },
+                            { title: "Log Evento", desc: "Registra l'evento nel diario di sala." }
+                        ]
+                    },
+                    'high': {
+                        title: "Evento Sismico Rilevante (ML >= 3.0)",
+                        code: "SIS-02-URG",
+                        tasks: [
+                            { title: "Verifica Epicentro e Comuni", desc: "Identifica i comuni entro 20km dall'epicentro.", priority: "high" },
+                            { title: "Chiamata Rapida Sindaci", desc: "Contattare telefonicamente i Sindaci dei comuni coinvolti.", priority: "high" },
+                            { title: "Verifica Danni", desc: "Chiedere esplicitamente: Ci sono crolli? Ci sono feriti?", priority: "med" },
+                            { title: "Attivazione Volontariato", desc: "Preallertare associazioni locali se richiesto dai Sindaci.", priority: "low" }
+                        ]
+                    }
+                }
             },
-            'criticita': {
-                text: "<strong>Nota Operativa:</strong> Ricorda che il bollettino deve essere inviato <em>prima</em> delle 14:00 per essere valido per il giorno successivo. Hai controllato se la PEC di ricezione è arrivata correttamente?",
-                alert: "Verifica che il link nel messaggio Telegram sia cliccabile prima di inviare.",
-                actions: ["Apri Webmail", "Apri Telegram Web", "Chiama C.F.D."]
-            },
-            'sismico': {
-                text: "In caso di evento sismico, la velocità è tutto. <br>1. Verifica Magnitudo su INGV.<br>2. Se > 3.0 prepara il foglio presenze per le chiamate.",
-                alert: "Attenzione: Non fidarti dei social media per la localizzazione. Usa solo dati INGV.",
-                actions: ["Apri INGV", "Lista Comuni Raggio 20km"]
-            },
-            'frana_maratea': {
-                text: "Per Maratea la situazione è delicata. Se i sensori pluviometrici superano la soglia, la chiamata al Commissario è prioritaria rispetto alla PEC.",
-                alert: "Se il Commissario non risponde entro 5 min, chiama i Carabinieri di Maratea.",
-                actions: ["Chiama Commissario", "Verifica Pluviometri"]
-            },
-            'rischio_idraulico': {
-                text: "Hai ricevuto l'avviso di superamento soglia? Verifica subito quale fiume è interessato. Spesso il Sinni e l'Agri hanno tempi di corrivazione diversi.",
-                alert: "Se è notte, privilegia la chiamata telefonica ai Sindaci rispetto a WhatsApp.",
-                actions: ["Visualizza Idrometri", "Rubrica Sindaci"]
-            },
-            'incendi': {
-                text: "Per rischio industriale (RIR), verifica subito la direzione del vento sul sito dell'Aeronautica per capire dove si sposterà la nube.",
-                actions: ["Meteo AM", "Piano Emergenza Esterna"]
+            'DIGHE': {
+                questions: [
+                    { label: "Fase di VIGILANZA", value: "vigilanza", risk: "Ordinario" },
+                    { label: "Fase di PREALLARME", value: "preallarme", risk: "Attenzione" },
+                    { label: "Fase di ALLARME", value: "allarme", risk: "CRITICO" }
+                ],
+                procedures: {
+                    'allarme': {
+                        title: "Rischio Dighe - Fase ALLARME",
+                        code: "DIG-03-RED",
+                        tasks: [
+                            { title: "Sirene", desc: "Verificare attivazione sirene a valle.", priority: "high" },
+                            { title: "Prefettura", desc: "Comunicazione immediata Prefettura (Linea dedicata).", priority: "high" },
+                            { title: "Evacuazione", desc: "Supportare i sindaci nelle procedure di evacuazione aree golenali.", priority: "high" }
+                        ]
+                    }
+                    // Altri casi omessi per brevità...
+                }
             }
-            // Aggiungere qui altri casi o un default
         };
 
-        function gestisciClick(idScheda) {
-            // 1. Gestione UI classica (Mostra/Nascondi schede)
-            mostraScheda(idScheda);
+        // --- STATO DELL'APPLICAZIONE ---
+        let currentCategory = null;
+
+        // --- FUNZIONI UI ---
+
+        function startNewEvent() {
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('checklist-container').style.display = 'none';
+            document.getElementById('event-wizard').style.display = 'block';
+            document.getElementById('step-1').classList.add('active');
+            document.getElementById('step-2').classList.remove('active');
             
-            // 2. Attivazione AI
-            aggiornaAI(idScheda);
+            addAiMessage("Avvio procedura Triage. Seleziona la tipologia di rischio.");
         }
 
-        function mostraScheda(idScheda) {
-            document.querySelectorAll('.scheda').forEach(scheda => scheda.classList.remove('active'));
-            // Fallback se l'ID non esiste nel codice HTML di esempio
-            const schedaDaMostrare = document.getElementById(idScheda);
-            if (schedaDaMostrare) {
-                schedaDaMostrare.classList.add('active');
-            } else {
-                // Se manca il div, ne mostro uno generico o rimango sul precedente
-                console.log("Scheda non trovata nell'HTML: " + idScheda);
+        function selectCategory(cat) {
+            currentCategory = cat;
+            document.getElementById('step-1').classList.remove('active');
+            
+            // Costruisci il passo 2 in base alla categoria
+            const step2Div = document.getElementById('step-2');
+            const contentDiv = document.getElementById('step-2-content');
+            const protocolData = protocols[cat];
+
+            if (!protocolData) {
+                alert("Protocollo non ancora digitalizzato in questa demo.");
+                startNewEvent();
+                return;
             }
-            
-            document.querySelectorAll('#menu-rischi button').forEach(bottone => {
-                bottone.classList.toggle('active', bottone.getAttribute('data-target') === idScheda);
+
+            // AI parla
+            addAiMessage("Ho recepito: <strong>" + cat + "</strong>. <br>Ora ho bisogno di parametrare l'evento per scegliere la procedura corretta.");
+
+            // Genera bottoni scelta
+            let html = `<div class="grid-buttons">`;
+            protocolData.questions.forEach(q => {
+                html += `<div class="type-btn" onclick="activateProcedure('${q.value}')">${q.label}<br><small>${q.risk}</small></div>`;
             });
-        }
-
-        function aggiornaAI(contextId) {
-            const container = document.getElementById('dynamic-ai-content');
-            const typing = document.getElementById('typing-indicator');
+            html += `</div>`;
             
-            // Pulisce il contenuto precedente
-            container.innerHTML = '';
-            typing.style.display = 'block';
-
-            // Simula un tempo di "pensiero" dell'AI (600ms)
-            setTimeout(() => {
-                typing.style.display = 'none';
-                
-                // Recupera i dati dalla Knowledge Base
-                const data = aiKnowledgeBase[contextId] || {
-                    text: "Sto monitorando la procedura. Segui attentamente i passaggi a video.",
-                    actions: ["Contatta Referente", "Logga Evento"]
-                };
-
-                // Costruisce l'HTML della risposta AI
-                let htmlContent = '';
-
-                // 1. Alert Box (se presente)
-                if(data.alert) {
-                    htmlContent += `
-                        <div class="ai-alert">
-                            <span style="font-size:1.2rem">⚠️</span>
-                            <div>${data.alert}</div>
-                        </div>
-                    `;
-                }
-
-                // 2. Messaggio principale
-                htmlContent += `<div class="ai-message">${data.text}</div>`;
-
-                // 3. Chip azioni suggerite
-                if(data.actions && data.actions.length > 0) {
-                    htmlContent += `<div style="margin-top:10px; font-size:0.8rem; color:#666; margin-bottom:5px;">AZIONI SUGGERITE:</div>`;
-                    data.actions.forEach(action => {
-                        htmlContent += `<span class="ai-suggestion-chip" onclick="alert('Simulazione azione: ${action}')">${action}</span>`;
-                    });
-                }
-
-                container.innerHTML = htmlContent;
-                
-                // Scrolla l'AI in fondo se c'è molto testo
-                const aiBody = document.getElementById('ai-body');
-                aiBody.scrollTop = aiBody.scrollHeight;
-
-            }, 600);
+            contentDiv.innerHTML = html;
+            step2Div.classList.add('active');
         }
 
-        // Init
-        document.addEventListener('DOMContentLoaded', () => gestisciClick('placeholder'));
-    </script>
+        function activateProcedure(variant) {
+            const data = protocols[currentCategory].procedures[variant];
+            
+            if(!data) {
+                // Fallback demo per varianti non definite nel JSON sopra
+                alert("Procedura demo non presente per questa variante."); 
+                return;
+            }
 
+            // 1. Nascondi Wizard e Mostra Checklist
+            document.getElementById('event-wizard').style.display = 'none';
+            const checkContainer = document.getElementById('checklist-container');
+            checkContainer.style.display = 'block';
+
+            // 2. Popola Intestazione
+            document.getElementById('procedure-title').innerText = data.title;
+            document.getElementById('procedure-code').innerText = data.code;
+
+            // 3. Popola Tasks
+            const list = document.getElementById('tasks-list');
+            list.innerHTML = "";
+            
+            data.tasks.forEach((task, index) => {
+                const isHighPriority = task.priority === 'high';
+                const styleBorder = isHighPriority ? 'border-left: 4px solid #e74c3c;' : '';
+                
+                list.innerHTML += `
+                    <div class="task-item" style="${styleBorder}">
+                        <input type="checkbox" class="task-checkbox" id="task-${index}" onchange="checkProgress()">
+                        <div class="task-content">
+                            <div class="task-title">${task.title} ${isHighPriority ? '<span style="color:red; font-size:0.8rem;">(PRIORITARIO)</span>' : ''}</div>
+                            <div class="task-desc">${task.desc}</div>
+                        </div>
+                        <div class="task-meta" id="meta-${index}">Pending</div>
+                    </div>
+                `;
+            });
+
+            // 4. Aggiungi alla sidebar eventi attivi
+            const eventList = document.getElementById('active-events-list');
+            eventList.innerHTML += `<div class="event-card">${data.title} <br><small>In corso...</small></div>`;
+
+            // 5. AI Supporto Decisionale
+            addAiMessage(`Procedura <strong>${data.code}</strong> attivata.<br>Ho generato la checklist operativa. <br><br>⚠️ <strong>ATTENZIONE:</strong> I task segnati in rosso sono bloccanti/prioritari. Eseguili per primi.`);
+        }
+
+        function checkProgress() {
+            const total = document.querySelectorAll('.task-checkbox').length;
+            const checked = document.querySelectorAll('.task-checkbox:checked').length;
+            
+            // Aggiorna timestamp sui task fatti
+            document.querySelectorAll('.task-checkbox').forEach((box, idx) => {
+                const meta = document.getElementById(`meta-${idx}`);
+                if(box.checked && meta.innerText === "Pending") {
+                    const now = new Date();
+                    meta.innerText = "Eseguito: " + now.toLocaleTimeString();
+                    meta.style.color = "green";
+                }
+            });
+
+            // AI Feedback sul progresso
+            if (checked === 1 && total > 1) {
+                addAiMessage("Primo step completato. Continua così. Ricorda di registrare tutto su SIGER a fine emergenza.");
+            }
+            if (checked === total) {
+                addAiMessage("✅ <strong>Procedura Completata.</strong><br>Tutti i passaggi sono stati spuntati. Puoi archiviare l'evento.");
+            }
+        }
+
+        // Funzione helper per chat AI
+        function addAiMessage(text) {
+            const chat = document.getElementById('ai-chat');
+            const div = document.createElement('div');
+            div.className = 'msg ai';
+            div.innerHTML = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight; // Auto scroll
+        }
+
+    </script>
 </body>
 </html>
